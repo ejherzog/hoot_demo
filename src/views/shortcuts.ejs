@@ -6,133 +6,21 @@
     <div class="container mt-2">
       <section>
         <div class="card-columns">
-          <div class="card grouping">
-            <h5 class="card-title"><%= self.name %></h5>
-            <form action="/add/text" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= self.name %>">
-              <input type="hidden" id="text" name="text" value="<%= self.bath %>">
-              <button type="submit" class="btn btn-primary shortcut"><%= self.bath %></button>
-            </form>
-            <form action="/add/text" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= self.name %>">
-              <input type="hidden" id="text" name="text" value="Nails">
-              <button type="submit" class="btn btn-danger shortcut">Nails</button>
-            </form>
-            <form action="/add/text" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= self.name %>">
-              <input type="hidden" id="text" name="text" value="Nap">
-              <button type="submit" class="btn btn-purple shortcut">Nap</button>
-            </form>
-          </div>
-          <div class="card grouping">
-            <h5 class="card-title">Activity</h5>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= activity.pt %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-success shortcut"><%= activity.pt %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= activity.skin %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-dark shortcut"><%= activity.skin %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= activity.hair %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-secondary shortcut"><%= activity.hair %></button>
-            </form>
-          </div>
-          <div class="card grouping">
-            <h5 class="card-title"><%= bowel.name %></h5>
-            <form action="/add/text" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= bowel.name %>">
-              <input type="hidden" id="text" name="text" value="<%= bowel.diarrhea %>">
-              <button type="submit" class="btn btn-warning shortcut"><%= bowel.diarrhea %></button>
-            </form>
-            <form action="/add/text" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= bowel.name %>">
-              <input type="hidden" id="text" name="text" value="<%= bowel.normal %>">
-              <button type="submit" class="btn btn-success shortcut"><%= bowel.normal %></button>
-            </form>
-          </div>
-          <div class="card grouping">
-            <h5 class="card-title"><%= medicine.name %></h5>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.wellbutrin %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-primary shortcut"><%= medicine.wellbutrin %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.vit_d %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-warning shortcut"><%= medicine.vit_d %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.digest %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-secondary shortcut"><%= medicine.digest %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.flonase %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-success shortcut"><%= medicine.flonase %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.vitex %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-info shortcut"><%= medicine.vitex %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= medicine.zyrtec %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-dark shortcut"><%= medicine.zyrtec %></button>
-            </form>
-          </div>
-          <div class="card grouping">
-            <h5 class="card-title"><%= intake.name %></h5>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.water %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-primary shortcut"><%= intake.water %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.coffee %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-warning shortcut"><%= intake.coffee %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.vegetable %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-success shortcut"><%= intake.vegetable %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.fruit %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-danger shortcut"><%= intake.fruit %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.soda %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-info shortcut"><%= intake.soda %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.liquor %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-dark shortcut"><%= intake.liquor %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.wine %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-purple shortcut"><%= intake.wine %></button>
-            </form>
-            <form action="/add/boolean" method="POST">
-              <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= intake.juice %>">
-              <input type="hidden" id="boolean" name="boolean" value="1">
-              <button type="submit" class="btn btn-secondary shortcut"><%= intake.juice %></button>
-            </form>
-          </div>
+          <% shortcutData.forEach((variables, category) => { %>
+            <div class="card grouping">
+              <h5 class="card-title"><%= category %></h5>
+              <% variables.forEach(variable => { %>
+                <form action="/add/boolean" method="POST">
+                  <input type="hidden" id="<%= variable %>" name="<%= variable %>" value="<%= variable.variable %>">
+                  <input type="hidden" id="boolean" name="boolean" value="1">
+                  <button type="submit" class="btn shortcut" style="background-color:<%= variable.color %>"><%= variable.variable %></button>
+                </form>
+              <% }) %>
+            </div>
+          <% }) %>
         </div>
       </section>
+      
       <%- include('./partials/_footer'); %>
     </div>
   </body>

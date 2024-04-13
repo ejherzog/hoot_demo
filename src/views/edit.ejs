@@ -4,6 +4,8 @@
   <body>
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
+      <hr>
+      <% if (type == 'variable') { %>
         <section class="w-50">
             <form action="/edit/variable/<%= variable._id %>" method="POST">
               <div class="form-group">
@@ -16,7 +18,6 @@
                     <option disabled value="" <%- variable.type == undefined ? 'selected' : ''%>>--- Select One ---</option>
                     <option value="boolean" <%- variable.type == "boolean" ? 'selected' : ''%>>Boolean (Yes or No)</option>
                     <option value="scalar" <%- variable.type == "scalar" ? 'selected' : ''%>>Scalar (Rating/Intensity or Count)</option>
-                    <option value="text" <%- variable.type == "text" ? 'selected' : ''%>>Text (Specify Activity)</option>
                 </select>
               </div>
               <div class="form-group">
@@ -34,30 +35,54 @@
                 <label for="category">Category:</label>
                 <select name="category" class="form-control" id="category" name="category" required>
                   <% categories.forEach(function(c) { %>
-                    <% if (variable.category == c) { %>
-                        <option value="<%= c %>" selected><%= c %></option>
+                    <% if (variable.category == c.id) { %>
+                        <option value="<%= c.id %>" selected><%= c.name %></option>
                     <% } else { %>
-                        <option value="<%= c %>"><%= c %></option>
+                        <option value="<%= c.id %>"><%= c.name %></option>
                     <% } %>
                 <% }) %>
                 </select>
               </div>
               <div class="form-group w-25">
                 <label for="color" class="form-label">Color</label>
-                <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= variable.color ? variable.color : '#563d7c' %>">
+                <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= color %>">
               </div>
               <div class="form-group">
                 <label for="shortcut" class="form-label">Shortcut?</label>
                 <div class="form-group">
-                    <input type="radio" id="shortcut" name="shortcut" value="1">
+                    <input type="radio" id="shortcut" name="shortcut" value="1" <%= variable.shortcut == "1" ? 'checked' : ''%>>
                     <label for="shortcut">Yes</label><br>
-                    <input type="radio" id="shortcut" name="shortcut" value="0">
+                    <input type="radio" id="shortcut" name="shortcut" value="0" <%= variable.shortcut == "1" ? '' : 'checked'%>>
                     <label for="shortcut">No</label>
                 </div>
               </div>
               <button type="submit" class="btn btn-primary">Submit Edits</button>
             </form>
           </section>
+          <hr>
+          <form action="/delete/variable/<%= variable._id %>" method="POST">
+            <p>This variable will no longer appear in Shortcuts or Add, but historical data will be retained and displayed.</p>
+            <button type="submit" class="btn btn-danger"><b>Delete <%= variable.variable %></b></button>
+          </form>
+      <% }  else if (type == 'category') { %>
+        <section class="w-50">
+          <form action="/edit/category/<%= category._id %>" method="POST">
+          <div class="form-group">
+            <label for="name">Category Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="<%= category.name %>" required>
+          </div>
+          <div class="form-group">
+            <label for="group">Group:</label>
+            <input type="text" class="form-control" id="group" name="group" value="<%= category.group %>" required>
+          </div>
+          <div class="form-group w-25">
+            <label for="color" class="form-label">Color</label>
+            <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= category.color %>">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Edits</button>
+        </form>
+        </section>
+      <% } %>
     <%- include('./partials/_footer'); %>
   </div>
 </body>

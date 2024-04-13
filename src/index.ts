@@ -5,8 +5,7 @@ import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
 import { insertRecord, generateStackedBooleanBarData, generateScalarData } from "./functions";
-import { Medicine, Bowel, Intake, Self, Sleep, Activity } from "./constants";
-import { types } from "util";
+import { Sleep } from "./constants";
 
 const app: Express = express();
 
@@ -14,11 +13,35 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const categories = new Datastore({ filename: 'categories.db', autoload: true });
 const variables = new Datastore({ filename: 'variables.db', autoload: true });
-const records = new Datastore({ filename: 'records.db', autoload: true, timestampData: true });
+const records = new Datastore({ filename: 'records.db', timestampData: true, autoload: true });
 
 app.get('/', (req: Request, res: Response) => {
+    categories.loadDatabase();
+    variables.loadDatabase();
+    records.loadDatabase();
+
+    const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
+
+    const catMap: Map<string, string> = new Map();
+    categoryData.forEach(c => {
+        catMap.set(c._id, c.name);
+    });
+
+    const variableData = variables.getAllData()
+        .filter(v => !v.deleted)
+        .sort((a, b) => a.category.localeCompare(b.category))
+        .map(v => {
+            const variable = v;
+            variable.category = catMap.get(v.category);   
+            return variable;
+        });
+
+    const fortyEightHoursAgo = moment().subtract(48, 'hours').startOf('day').valueOf();
+
     const recordData = records.getAllData()
+        .filter(r => r.updatedAt > fortyEightHoursAgo)
         .sort((a, b) => b.updatedAt - a.updatedAt)
         .map(record => {
             return {
@@ -27,82 +50,99 @@ app.get('/', (req: Request, res: Response) => {
                 'moment': moment(record['updatedAt']).format("MMM Do h:mm A").toString()
             }
         });
-    const variableData = variables.getAllData().sort((a, b) => a.category.localeCompare(b.category));
     res.render('index', {
         records: recordData,
-        variables: variableData
+        variables: variableData,
+        categories: categoryData
       });
 });
 
 app.get('/add', (req: Request, res: Response) => {
-    const data = variables.getAllData();
-    const categories = data.map(entry => entry.category);
+    const varData = variables.getAllData();
+    const catData = categories.getAllData().map(c => {
+        return {
+            id: c._id,
+            name: c.name
+        };
+    });
     res.render('add', {
-        variables: data,
-        categories: new Set(categories)
+        variables: varData,
+        categories: catData
       });
 });
 
+app.get('/edit/category/:id', (req: Request, res: Response) => {
+    var cat_to_edit = categories.getAllData().find(c => c._id == req.params.id);
+    res.render('edit', {
+        type: 'category',
+        category: cat_to_edit
+    });
+});
+
 app.get('/edit/variable/:id', (req: Request, res: Response) => {
-    var var_to_edit = {};
-    const categories: string[] = [];
+
+    var var_to_edit: any = {};
+    const catData = categories.getAllData().map(c => {
+        return {
+            id: c._id,
+            name: c.name,
+            color: c.color
+        };
+    });
+    var color;
     const var_types: string[] = [];
     const sub_types: string[] = [];
     variables.getAllData()
         .forEach(variable => {
-            categories.push(variable.category);
             var_types.push(variable.type);
             sub_types.push(variable.subtype);
-            if (variable._id == req.params.id) var_to_edit = variable; 
+            if (variable._id == req.params.id) {
+                var_to_edit = variable;
+                if (variable.color != "#000000") {
+                    color = variable.color;
+                }
+            }
         });
+
+    if (!color) {
+        color = catData.find(c => c.name == var_to_edit.category || c.id == var_to_edit.category)!.color;
+    }
     res.render('edit', {
+        type: 'variable',
+        color: color,
         variable: var_to_edit,
-        categories: new Set(categories),
+        categories: catData,
         types: new Set(var_types),
         subtypes: new Set(sub_types)
     });
 });
 
 app.get('/shortcuts', (req: Request, res: Response) => {
+
+    const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
+
+    const catMap = new Map<string, { name: string, color: string }>();
+    categoryData.forEach(c => {
+        catMap.set(c._id, { name: c.name, color: c.color });
+    });
+
+    const varData = variables.getAllData()
+        .filter(v => !v.deleted && v.shortcut == '1')
+        .map(v => {
+            return { variable: v.variable, color: v.color, category: catMap.get(v.category)!.name };
+        })
+        .sort((a, b) => a.category.localeCompare(b.category));
+
+    const shortcutData: Map<string, { variable: string, color: string}[]> = new Map();
+    varData.forEach(v => {
+        if (!shortcutData.has(v.category!)) {
+            shortcutData.set(v.category!, []);
+        }
+        shortcutData.get(v.category!)!.push({ variable: v.variable, color: v.color });
+    });
+
     res.render('shortcuts', {
-        bowel: {
-            name: Bowel.BOWEL,
-            diarrhea: Bowel.DIARRHEA,
-            normal: Bowel.NORMAL
-        },
-        self: {
-            name: Self.SELF,
-            bath: Self.BATH,
-            nails: Self.NAILS,
-            nap: Self.NAP
-        },
-        medicine: {
-            name: Medicine.MEDICINE,
-            wellbutrin: Medicine.WELLBUTRIN,
-            vit_d: Medicine.VIT_D,
-            digest: Medicine.DIGEST,
-            flonase: Medicine.FLONASE,
-            vitex: Medicine.VITEX,
-            zyrtec: Medicine.ZYRTEC
-        },
-        intake: {
-            name: Intake.INTAKE,
-            water: Intake.WATER,
-            coffee: Intake.COFFEE,
-            vegetable: Intake.VEGETABLE,
-            fruit: Intake.FRUIT,
-            soda: Intake.SODA,
-            liquor: Intake.LIQUOR,
-            wine: Intake.WINE,
-            juice: Intake.JUICE
-        },
-        activity : {
-            name: Activity.ACTIVITY,
-            pt: Activity.PT,
-            skin: Activity.SKIN,
-            hair: Activity.HAIR
-        },
-        variable: "variable"
+        shortcutData: shortcutData
     });
 });
 
@@ -135,6 +175,11 @@ app.get('/chart', (req: Request, res: Response) => {
     });
 });
 
+app.post('/add/category', (req: Request, res: Response) => {
+    categories.insert(req.body);
+    res.redirect('/add');
+});
+
 app.post('/add/variable', (req: Request, res: Response) => {
     variables.insert(req.body);
     res.redirect('/add');
@@ -150,13 +195,13 @@ app.post('/add/scalar', (req: Request, res: Response) => {
     res.redirect('/');
 });
 
-app.post('/add/text', (req: Request, res: Response) => {
-    insertRecord(req.body, records, 'text');
+app.post('/edit/variable/:id', (req: Request, res: Response) => {
+    variables.update({ _id: req.params.id }, req.body);
     res.redirect('/');
 });
 
-app.post('/edit/variable/:id', (req: Request, res: Response) => {
-    variables.update({ _id: req.params.id }, req.body);
+app.post('/edit/category/:id', (req: Request, res: Response) => {
+    categories.update({ _id: req.params.id }, req.body);
     res.redirect('/');
 });
 
@@ -171,6 +216,11 @@ app.post('/daily/morning', (req: Request, res: Response) => {
     records.insert(quality);
     records.insert(dreams);
 
+    res.redirect('/');
+});
+
+app.post('/delete/variable/:id', (req: Request, res: Response) => {
+    variables.update({ _id: req.params.id }, { $set: { deleted: true }} );
     res.redirect('/');
 });
 
