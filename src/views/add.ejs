@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <%- include('./partials/_head'); %>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+      <hr>
+      <section class="w-75">
+        <h4>Add Boolean Record</h4>
+        <form action="/add/boolean" method="POST">
+          <div class="form-group">
+            <label for="variable">Variable:</label>
+            <select class="form-select" name="variable" id="variable" required>
+                <option selected disabled value="">--- Select One ---</option>
+                <% variables.forEach(function(s) { %>
+                    <% if (s.type == 'boolean') { %>
+                        <option value="<%= s.variable %>"><%= s.variable %></option>
+                     <% } %>
+                <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="radio" id="boolean" name="boolean" value="1">
+            <label for="boolean">Yes</label><br>
+            <input type="radio" id="boolean" name="boolean" value="0">
+            <label for="boolean">No</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Record Boolean</button>
+        </form>
+      </section>
+      <hr>
+      <section class="w-75">
+        <h4>Add Scalar Record</h4>
+        <form action="/add/scalar" method="POST">
+            <div class="form-group">
+                <label for="variable">Variable:</label>
+                <select name="variable" id="variable" required>
+                    <option selected disabled value="">--- Select One ---</option>
+                    <% variables.forEach(function(s) { %>
+                        <% if (s.type == 'scalar') { %>
+                            <option value="<%= s.variable %>"><%= s.variable %></option>
+                         <% } %>
+                    <% }) %>
+                </select>
+              </div>
+          <div class="form-group">
+            <label for="scalar">Number:</label>
+            <input type="number" id="scalar" name="scalar" min="0">
+          </div>
+          <button type="submit" class="btn btn-primary">Record Scalar</button>
+        </form>
+      </section>
+      <hr>
+      <section class="w-75">
+        <h4>Add Text Record</h4>
+        <form action="/add/text" method="POST">
+            <div class="form-group">
+                <label for="variable">Variable:</label>
+                <select name="variable" id="variable" required>
+                    <option selected disabled value="">--- Select One ---</option>
+                    <% variables.forEach(function(s) { %>
+                        <% if (s.type == 'text') { %>
+                            <option value="<%= s.variable %>"><%= s.variable %></option>
+                         <% } %>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="text">Text:</label>
+                <input type="text" class="form-control" id="text" name="text" required>
+              </div>
+          <button type="submit" class="btn btn-primary">Record Text</button>
+        </form>
+      </section>
+      <hr>
+      <section class="w-75">
+        <h4>Add New Variable</h4>
+        <form action="/add/variable" method="POST">
+          <div class="form-group">
+            <label for="variable">Variable Name:</label>
+            <input type="text" class="form-control" id="variable" name="variable" required>
+          </div>
+          <div class="form-group">
+            <label for="type">Variable Type:</label>
+            <select name="type" id="type" required>
+                <option selected disabled value="">--- Select One ---</option>
+                <option value="boolean">Boolean (Yes or No)</option>
+                <option value="scalar">Scalar (Rating/Intensity or Count)</option>
+                <option value="text">Text (Specify Activity)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="subtype">Variable Sub-Type:</label>
+            <select name="subtype" id="subtype">
+                <option selected disabled value="">--- Select One ---</option>
+                <option value="high_low">Rating/Intensity</option>
+                <option value="hours">Hours</option>
+                <option value="number">Number or Count</option>
+                <option value="positive">Positive</option>
+                <option value="negative">Negative</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="category">Category:</label>
+            <select name="category" class="form-control" id="category" name="category" required>
+              <option selected disabled value="">--- Select One ---</option>
+              <% categories.forEach(function(c) { %>
+                    <option value="<%= c %>"><%= c %></option>
+            <% }) %>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Variable</button>
+        </form>
+      </section>
+      <hr>
+      <%- include('./partials/_footer'); %>
+    </div>
+  </body>
+</html>

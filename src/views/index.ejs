@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/_head'); %>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+      <hr>
+      <section>
+        <table class="table table-sm table-striped">
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Category</th>
+          </tr>
+          <% variables.forEach(function(v) { %>
+            <tr>
+              <td><%= v.variable %></td>
+              <td><%= v.type %><%= v.type == 'scalar' ? ` (${v.subtype})` : '' %></td>
+              <td><%= v.category %></td>
+            </tr>
+          <% }) %>
+        </table> 
+      </section>
+      <hr>
+      <section>
+        <table class="table table-sm table-striped">
+          <tr>
+            <th>Variable</th>
+            <th>Data</th>
+            <th>Last Updated</th>
+          </tr>
+          <% records.forEach(function(r) { %>
+            <tr>
+              <td><%= r.variable %></td>
+              <td><%= r.data %></td>
+              <td><%= r.moment %></td>
+            </tr>
+          <% }) %>
+        </table> 
+      </section>
+      <hr>
+      <%- include('./partials/_footer'); %>
+    </div>
+  </body>
+</html>

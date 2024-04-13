@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/_head'); %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+      <section>
+        <div><canvas id="scalarChart"></canvas></div>
+        <hr>
+        <div><canvas id="booleanChart"></canvas></div>
+        
+        <script type="text/javascript">
+          const autocolors = window['chartjs-plugin-autocolors'];
+          Chart.register(autocolors);
+
+          const scalarCtx = document.getElementById("scalarChart").getContext("2d");
+          const scalarChart = new Chart(scalarCtx, {
+            type: 'bar',
+            options: {
+              scales: {
+                x: {
+                  type: 'time',
+                  position: 'bottom',
+                  time: {
+                    round: 'day',
+                    unit: 'day'
+                  }
+                },
+                y: {
+                  min: 0
+                }
+              }
+            },
+            data: {
+              datasets: <%- JSON.stringify(scalarData) %>
+            }
+          });
+
+          const booleanCtx = document.getElementById("booleanChart").getContext("2d");
+          const booleanChart = new Chart(booleanCtx, {
+            type: 'bar',
+            options: {
+              scales: {
+                x: {
+                  type: 'time',
+                  time: {
+                    unit: 'day'
+                  },
+                  position: 'bottom',
+                  stacked: true
+                },
+                y: {
+                  stacked: true
+                }
+              }
+            },
+            data: {
+              datasets: <%- JSON.stringify(booleanData) %>
+            }
+          });
+        </script>
+      </section>
+      <%- include('./partials/_footer'); %>
+    </div>
+  </body>
+</html>
