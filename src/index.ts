@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import moment from "moment";
 import { insertRecord, generateStackedBooleanBarData, generateScalarData } from "./functions";
 import { Medicine, Bowel, Intake, Self, Sleep, Activity } from "./constants";
+import { types } from "util";
 
 const app: Express = express();
 
@@ -40,6 +41,26 @@ app.get('/add', (req: Request, res: Response) => {
         variables: data,
         categories: new Set(categories)
       });
+});
+
+app.get('/edit/variable/:id', (req: Request, res: Response) => {
+    var var_to_edit = {};
+    const categories: string[] = [];
+    const var_types: string[] = [];
+    const sub_types: string[] = [];
+    variables.getAllData()
+        .forEach(variable => {
+            categories.push(variable.category);
+            var_types.push(variable.type);
+            sub_types.push(variable.subtype);
+            if (variable._id == req.params.id) var_to_edit = variable; 
+        });
+    res.render('edit', {
+        variable: var_to_edit,
+        categories: new Set(categories),
+        types: new Set(var_types),
+        subtypes: new Set(sub_types)
+    });
 });
 
 app.get('/shortcuts', (req: Request, res: Response) => {
@@ -131,6 +152,11 @@ app.post('/add/scalar', (req: Request, res: Response) => {
 
 app.post('/add/text', (req: Request, res: Response) => {
     insertRecord(req.body, records, 'text');
+    res.redirect('/');
+});
+
+app.post('/edit/variable/:id', (req: Request, res: Response) => {
+    variables.update({ _id: req.params.id }, req.body);
     res.redirect('/');
 });
 

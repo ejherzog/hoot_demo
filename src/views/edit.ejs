@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/_head'); %>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+        <section class="w-50">
+            <form action="/edit/variable/<%= variable._id %>" method="POST">
+              <div class="form-group">
+                <label for="variable">Variable Name:</label>
+                <input type="text" class="form-control" id="variable" name="variable" value="<%= variable.variable %>" required>
+              </div>
+              <div class="form-group">
+                <label for="type">Variable Type:</label>
+                <select name="type" id="type" required>
+                    <option disabled value="" <%- variable.type == undefined ? 'selected' : ''%>>--- Select One ---</option>
+                    <option value="boolean" <%- variable.type == "boolean" ? 'selected' : ''%>>Boolean (Yes or No)</option>
+                    <option value="scalar" <%- variable.type == "scalar" ? 'selected' : ''%>>Scalar (Rating/Intensity or Count)</option>
+                    <option value="text" <%- variable.type == "text" ? 'selected' : ''%>>Text (Specify Activity)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="subtype">Variable Sub-Type:</label>
+                <select name="subtype" id="subtype">
+                    <option disabled value="" <%- variable.subtype == undefined ? 'selected' : ''%>>--- Select One ---</option>
+                    <option value="high_low" <%- variable.subtype == "high_low" ? 'selected' : ''%>>Rating/Intensity</option>
+                    <option value="hours" <%- variable.subtype == "hours" ? 'selected' : ''%>>Hours</option>
+                    <option value="number" <%- variable.subtype == "number" ? 'selected' : ''%>>Number or Count</option>
+                    <option value="positive" <%- variable.subtype == "positive" ? 'selected' : ''%>>Positive</option>
+                    <option value="negative" <%- variable.subtype == "negative" ? 'selected' : ''%>>Negative</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <select name="category" class="form-control" id="category" name="category" required>
+                  <% categories.forEach(function(c) { %>
+                    <% if (variable.category == c) { %>
+                        <option value="<%= c %>" selected><%= c %></option>
+                    <% } else { %>
+                        <option value="<%= c %>"><%= c %></option>
+                    <% } %>
+                <% }) %>
+                </select>
+              </div>
+              <div class="form-group w-25">
+                <label for="color" class="form-label">Color</label>
+                <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= variable.color ? variable.color : '#563d7c' %>">
+              </div>
+              <div class="form-group">
+                <label for="shortcut" class="form-label">Shortcut?</label>
+                <div class="form-group">
+                    <input type="radio" id="shortcut" name="shortcut" value="1">
+                    <label for="shortcut">Yes</label><br>
+                    <input type="radio" id="shortcut" name="shortcut" value="0">
+                    <label for="shortcut">No</label>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Edits</button>
+            </form>
+          </section>
+    <%- include('./partials/_footer'); %>
+  </div>
+</body>
+</html>

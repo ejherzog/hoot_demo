@@ -11,15 +11,21 @@
             <th>Variable</th>
             <th>Type</th>
             <th>Category</th>
+            <th>Color</th>
+            <th>Fave</th>
+            <th>Edit</th>
           </tr>
           <% variables.forEach(function(v) { %>
             <tr>
               <td><%= v.variable %></td>
               <td><%= v.type %><%= v.type == 'scalar' ? ` (${v.subtype})` : '' %></td>
               <td><%= v.category %></td>
+              <td style="color:<%= v.color %>">&#9632;</td>
+              <td><%= v.shortcut == '1' ? '✅' : '' %></td>
+              <td><a href="/edit/variable/<%= v._id %>">Edit</a></td>
             </tr>
           <% }) %>
-        </table> 
+        </table>
       </section>
       <hr>
       <section>
