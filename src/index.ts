@@ -4,8 +4,7 @@ import Datastore from "nedb";
 import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
-import { insertRecord, generateStackedBooleanBarData, generateScalarData } from "./functions";
-import { Sleep } from "./constants";
+import { insertRecord, generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData } from "./functions";
 
 const app: Express = express();
 
@@ -172,26 +171,43 @@ app.get('/daily', (req: Request, res: Response) => {
 
 app.get('/chart', (req: Request, res: Response) => {
 
+    var catColorMap = new Map<string, string>(); // category ID -> color
+    categories.getAllData()
+        .forEach(category => {
+            catColorMap.set(category._id, category.color);
+        });
+
+    var highLowColorMap: Map<string, string> = new Map();
     var scalarColorMap: Map<string, string> = new Map();
     var booleanColorMap: Map<string, string> = new Map();
+
+    var highLowCatMap: Map<string, string> = new Map();
     var booleanCatMap: Map<string, string> = new Map();
     var posNegMap: Map<string, boolean> = new Map();
 
     variables.getAllData()
         .forEach(variable => {
-            if (variable.type == 'scalar') {
-                scalarColorMap.set(variable.variable, variable.color);
+            if (variable.subtype == 'high_low') {
+                highLowColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                highLowCatMap.set(variable.variable, variable.category);
+                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
+            } else if (variable.type == 'scalar') {
+                scalarColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             } else if (variable.type == 'boolean') {
-                booleanColorMap.set(variable.variable, variable.color);
+                booleanColorMap.set(variable.variable, catColorMap.get(variable.category)!);
                 booleanCatMap.set(variable.variable, variable.category);
-                posNegMap.set(variable.variable, variable.subtype == 'positive' ? true : false);
+                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             }
         });
     
-    var scalarSets = generateScalarData(scalarColorMap, records.getAllData());
-    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, records.getAllData());
+    const allRecords = records.getAllData();
+    var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, allRecords);
+    var scalarSets = generateScalarData(scalarColorMap, posNegMap, allRecords);
+    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, allRecords);
 
     res.render('chart', {
+        highLowData: highLowSets,
         scalarData: scalarSets,
         booleanData: booleanSets
     });

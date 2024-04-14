@@ -8,32 +8,35 @@
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
       <section>
-        <div><canvas id="scalarChart"></canvas></div>
+        <div><canvas id="highLowChart"></canvas></div>
         <hr>
         <div><canvas id="booleanChart"></canvas></div>
+        <hr>
+        <div><canvas id="scalarChart"></canvas></div>
         
         <script type="text/javascript">
 
-          const scalarCtx = document.getElementById("scalarChart").getContext("2d");
-          const scalarChart = new Chart(scalarCtx, {
+          const highLowCtx = document.getElementById("highLowChart").getContext("2d");
+          const highLowChart = new Chart(highLowCtx, {
             type: 'bar',
             options: {
               scales: {
                 x: {
                   type: 'time',
                   position: 'bottom',
+                  stacked: true,
                   time: {
                     round: 'day',
                     unit: 'day'
                   }
                 },
                 y: {
-                  min: 0
+                  stacked: true
                 }
               }
             },
             data: {
-              datasets: <%- JSON.stringify(scalarData) %>
+              datasets: <%- JSON.stringify(highLowData) %>
             }
           });
 
@@ -57,6 +60,26 @@
             },
             data: {
               datasets: <%- JSON.stringify(booleanData) %>
+            }
+          });
+
+          const scalarCtx = document.getElementById("scalarChart").getContext("2d");
+          const scalarChart = new Chart(scalarCtx, {
+            type: 'bar',
+            options: {
+              scales: {
+                x: {
+                  type: 'time',
+                  position: 'bottom',
+                  time: {
+                    round: 'day',
+                    unit: 'day'
+                  }
+                }
+              }
+            },
+            data: {
+              datasets: <%- JSON.stringify(scalarData) %>
             }
           });
         </script>

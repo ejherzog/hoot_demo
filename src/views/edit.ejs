@@ -21,14 +21,20 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="subtype">Variable Sub-Type:</label>
+                <label for="subtype">Scalar Sub-Type:</label>
                 <select name="subtype" id="subtype">
                     <option disabled value="" <%- variable.subtype == undefined ? 'selected' : ''%>>--- Select One ---</option>
                     <option value="high_low" <%- variable.subtype == "high_low" ? 'selected' : ''%>>Rating/Intensity</option>
                     <option value="hours" <%- variable.subtype == "hours" ? 'selected' : ''%>>Hours</option>
                     <option value="number" <%- variable.subtype == "number" ? 'selected' : ''%>>Number or Count</option>
-                    <option value="positive" <%- variable.subtype == "positive" ? 'selected' : ''%>>Positive</option>
-                    <option value="negative" <%- variable.subtype == "negative" ? 'selected' : ''%>>Negative</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sign">Positive or Negative:</label>
+                <select name="sign" id="sign">
+                    <option disabled value="" <%- variable.sign == undefined ? 'selected' : ''%>>--- Select One ---</option>
+                    <option value="positive" <%- variable.sign == "positive" ? 'selected' : ''%>>Positive</option>
+                    <option value="negative" <%- variable.sign == "negative" ? 'selected' : ''%>>Negative</option>
                 </select>
               </div>
               <div class="form-group">
@@ -58,9 +64,9 @@
               <div class="form-group">
                 <label for="daily" class="form-label">Daily Check In</label>
                 <div class="form-group">
-                  <input type="checkbox" id="morning" name="morning" value="1">
+                  <input type="checkbox" id="morning" name="morning" value="1" <%= variable.morning == "1" ? 'checked' : ''%>>
                   <label for="morning">Morning</label><br>
-                  <input type="checkbox" id="evening" name="evening" value="1">
+                  <input type="checkbox" id="evening" name="evening" value="1" <%= variable.evening == "1" ? 'checked' : ''%>>
                   <label for="evening">Evening</label><br>
                 </div>
               </div>
