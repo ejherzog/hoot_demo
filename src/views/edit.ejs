@@ -55,6 +55,15 @@
                     <input type="radio" id="shortcut" name="shortcut" value="0" <%= variable.shortcut == "1" ? '' : 'checked'%>>
                     <label for="shortcut">No</label>
                 </div>
+              <div class="form-group">
+                <label for="daily" class="form-label">Daily Check In</label>
+                <div class="form-group">
+                  <input type="checkbox" id="morning" name="morning" value="1">
+                  <label for="morning">Morning</label><br>
+                  <input type="checkbox" id="evening" name="evening" value="1">
+                  <label for="evening">Evening</label><br>
+                </div>
+              </div>
               </div>
               <button type="submit" class="btn btn-primary">Submit Edits</button>
             </form>

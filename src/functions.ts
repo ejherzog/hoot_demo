@@ -9,7 +9,7 @@ export function insertRecord(newRecord: any, records: Datastore, type: string) {
 }
 
 export function generateStackedBooleanBarData(categoryMap: Map<string, string>, 
-    posNegMap: Map<string, boolean>, records: any[]): Object[] {
+    posNegMap: Map<string, boolean>, colorMap: Map<string, string>, records: any[]): Object[] {
 
     var recordsByDayMap: Map<string, Map<number, number>> = new Map();
     records
@@ -38,6 +38,7 @@ export function generateStackedBooleanBarData(categoryMap: Map<string, string>,
                 dayCountArray.push(new Point(date, finalCount));
             });
             fullDataSet.push({
+                backgroundColor: colorMap.get(variable),
                 label: variable,
                 stack: categoryMap.get(variable),
                 data: dayCountArray
@@ -47,12 +48,12 @@ export function generateStackedBooleanBarData(categoryMap: Map<string, string>,
     return fullDataSet;
 }
 
-export function generateScalarData(categoryMap: Map<string, string>, records: any[]): Object[] {
+export function generateScalarData(colorMap: Map<string, string>, records: any[]): Object[] {
 
     var scalarSets: Object[] = [];
     var scalarData: Map<string, Point[]> = new Map();
     records
-        .filter(record => categoryMap.get(record.variable) != undefined)
+        .filter(record => colorMap.get(record.variable) != undefined)
         .forEach(record => {
             const datapoint = new Point(
                 moment(record.updatedAt).valueOf(),
@@ -64,10 +65,8 @@ export function generateScalarData(categoryMap: Map<string, string>, records: an
             scalarData.get(record.variable)?.push(datapoint);
         });
     scalarData.forEach((value, key) => {
-        if (categoryMap.get(key) != 'rating') {
-            value = interpolateData(value);
-        }
         scalarSets.push({
+            backgroundColor: colorMap.get(key),
             label: key,
             data: value
         });
@@ -76,17 +75,17 @@ export function generateScalarData(categoryMap: Map<string, string>, records: an
     return scalarSets;
 }
 
-function interpolateData(values: Point[]): Point[] {
-    var max: number = -1;
-    values.forEach(value => {
-        if (value['y'] > max) {
-            max = value['y'];
-        }
-    });
+// function interpolateData(values: Point[]): Point[] {
+//     var max: number = -1;
+//     values.forEach(value => {
+//         if (value['y'] > max) {
+//             max = value['y'];
+//         }
+//     });
 
-    var reduced: Point[] = [];
-    values.forEach(value => {
-        reduced.push(new Point(value['x'], Math.floor(value['y'] * 3 / max)));
-    });
-    return reduced;
-}
+//     var reduced: Point[] = [];
+//     values.forEach(value => {
+//         reduced.push(new Point(value['x'], Math.floor(value['y'] * 3 / max)));
+//     });
+//     return reduced;
+// }

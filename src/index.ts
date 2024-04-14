@@ -11,8 +11,10 @@ const app: Express = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const labels = new Datastore({ filename: 'labels.db', autoload: true });
 const categories = new Datastore({ filename: 'categories.db', autoload: true });
 const variables = new Datastore({ filename: 'variables.db', autoload: true });
 const records = new Datastore({ filename: 'records.db', timestampData: true, autoload: true });
@@ -147,27 +149,47 @@ app.get('/shortcuts', (req: Request, res: Response) => {
 });
 
 app.get('/daily', (req: Request, res: Response) => {
-    res.render('daily');
+    const highLowLabels = labels.getAllData().find(label => label.type == 'high_low').labels;
+    const morningVariables: any[] = [];
+    const eveningVariables: any[] = [];
+    variables.getAllData()
+        .filter(v => v.subtype)
+        .sort((a, b) => a.subtype.localeCompare(b.subtype))
+        .forEach(variable => {
+            if (variable.morning == "1") {
+                morningVariables.push({ name: variable.variable, type: variable.subtype });
+            }
+            if (variable.evening == "1") {
+                eveningVariables.push({ name: variable.variable, type: variable.subtype });
+            }
+        });
+    res.render('daily', {
+        highLowLabels,
+        morningVariables,
+        eveningVariables
+    });
 });
 
 app.get('/chart', (req: Request, res: Response) => {
 
-    var scalarCatMap: Map<string, string> = new Map();
+    var scalarColorMap: Map<string, string> = new Map();
+    var booleanColorMap: Map<string, string> = new Map();
     var booleanCatMap: Map<string, string> = new Map();
     var posNegMap: Map<string, boolean> = new Map();
 
     variables.getAllData()
         .forEach(variable => {
             if (variable.type == 'scalar') {
-                scalarCatMap.set(variable.variable, variable.subtype);
+                scalarColorMap.set(variable.variable, variable.color);
             } else if (variable.type == 'boolean') {
+                booleanColorMap.set(variable.variable, variable.color);
                 booleanCatMap.set(variable.variable, variable.category);
                 posNegMap.set(variable.variable, variable.subtype == 'positive' ? true : false);
             }
         });
     
-    var scalarSets = generateScalarData(scalarCatMap, records.getAllData());
-    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, records.getAllData());
+    var scalarSets = generateScalarData(scalarColorMap, records.getAllData());
+    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, records.getAllData());
 
     res.render('chart', {
         scalarData: scalarSets,
@@ -205,17 +227,10 @@ app.post('/edit/category/:id', (req: Request, res: Response) => {
     res.redirect('/');
 });
 
-app.post('/daily/morning', (req: Request, res: Response) => {
-    // parse form data
-    const dreams = { variable: Sleep.DREAMS, data: req.body['dreams'] };
-    const quality = { variable: Sleep.QUALITY, data: req.body['quality'] };
-    const hours = { variable: Sleep.SLEEP_HRS, data: req.body['hours'] };
-
-    // insert records
-    records.insert(hours);
-    records.insert(quality);
-    records.insert(dreams);
-
+app.post('/daily', (req: Request, res: Response) => {
+    for (const [key, value] of Object.entries(req.body)) {
+        records.insert({ variable: key, data: value });
+    }
     res.redirect('/');
 });
 

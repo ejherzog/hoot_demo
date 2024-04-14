@@ -6,80 +6,77 @@
     <div class="container mt-2">
       <section>
         <h3>Morning Check In</h3>
-        <form action="/daily/morning" method="POST">
-          <div class="form-group">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label" for="quality">Sleep Quality:</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="quality" name="quality" value="3">
-            <label class="form-check-label" for="3">Great</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="quality" name="quality" value="2">
-            <label class="form-check-label" for="2">Average</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="quality" name="quality" value="1">
-            <label class="form-check-label" for="1">Poor</label>
-          </div>
-          <div class="form-check form-check-inline"></div>
-            <input class="form-check-input" type="radio" id="quality" name="quality" value="0">
-            <label class="form-check-label" for="0">Horrible</label>
-          </div>
-        <div class="form-group">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label" for="dreams">Intense Dreams:</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="dreams" name="dreams" value="3">
-            <label class="form-check-label" for="3">Many</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="dreams" name="dreams" value="2">
-            <label class="form-check-label" for="2">Some</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="dreams" name="dreams" value="1">
-            <label class="form-check-label" for="1">Normal Dreams</label>
-          </div>
-          <div class="form-check form-check-inline"></div>
-            <input class="form-check-input" type="radio" id="dreams" name="dreams" value="0">
-            <label class="form-check-label" for="0">No Dreams</label>
-          </div>
-          <div class="form-group">
-            <label for="hours">Hours of Sleep:</label>
-            <select class="form-select" name="hours" id="hours" required>
-              <% for (let i = 0; i < 25; i++) { %>
-                  <option value="<%= i %>"><%= i %></option>
+        <form action="/daily" method="POST">
+          <% morningVariables.forEach(variable => { %>
+            <div class="form-row form-group">
+              <% if (variable.type == "high_low") { %>
+                <div class="form-check form-check-inline col">
+                  <label class="form-check-label" for="<%= variable.name %>"><%= variable.name %>:</label>
+                </div>
+                <div class="form-group col">
+                <% highLowLabels.forEach(label => {%>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="<%= label.value %>" required>
+                    <label class="form-check-label" for="<%= label.value %>"><%= label.label %></label>
+                  </div>
+                <% }) %>
+                </div>
+              <% } else if (variable.type == "hours") { %>
+                <div class="form-group col">
+                  <label for="<%= variable.name %>"><%= variable.name %>:</label>
+                  <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
+                    <% for (let i = 0; i < 25; i++) { %>
+                        <option value="<%= i %>"><%= i %></option>
+                    <% } %>
+                  </select>
+                </div>
               <% } %>
-          </select>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-success">Submit Sleep</button>
+            </div>
+          <% }) %>
+          <div class="form-group form-row">
+            <button type="submit" class="btn btn-success">Submit Morning</button>
           </div>
         </form>
-        <hr>
-        <h2>Evening</h2>
-        <ol>
-            <li>Hours of Driving (number below 24)</li>
-            <li>Confidence</li>
-            <li>Foggy or Unfocused</li>
-            <li>Irritable or Angry</li>
-            <li>Sad or Down</li>
-            <li>Centered or Calm</li>
-            <li>Excited or Energetic</li>
-            <li>Stressed or Anxious</li>
-            <li>Vulnerable or Sensitive</li>
-            <li>Arousal</li>
-            <li>Sensory Sensitivity</li>
-            <li>Cramps</li>
-            <li>Urination</li>
-            <li>Fatigue</li>
-            <li>Energy Level</li>
-            <li>Acne</li>
-            <li>KP</li>
-        </ol>
+      </section>
+      <hr>
+      <section>
+        <h3>Evening Check In</h3>
+        <form action="/daily" method="POST">
+          <% eveningVariables.forEach(variable => { %>
+            <div class="form-row form-group">
+              <% if (variable.type == "high_low") { %>
+                <div class="form-check form-check-inline col">
+                  <label class="form-check-label" for="<%= variable.name %>"><%= variable.name %>:</label>
+                </div>
+                <div class="col">
+                <% highLowLabels.forEach(label => {%>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="<%= label.value %>" required>
+                    <label class="form-check-label" for="<%= label.value %>"><%= label.label %></label>
+                  </div>
+                <% }) %>
+                </div>
+              <% } else if (variable.type == "hours") { %>
+                <div class="form-group col">
+                  <label for="<%= variable.name %>"><%= variable.name %>:</label>
+                    <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
+                      <% for (let i = 0; i < 25; i++) { %>
+                          <option value="<%= i %>"><%= i %></option>
+                      <% } %>
+                    </select>
+                </div>
+              <% } else if (variable.type == "number") { %>
+                <div class="form-group col">
+                    <label for="<%= variable.name %>"><%= variable.name %></label>
+                    <input type="number" id="<%= variable.name %>" name="<%= variable.name %>" class="form-select" />
+                </div>
+              <% } %>
+            </div>
+          <% }) %>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Submit Evening</button>
+          </div>
+        </form>
       </section>
       <%- include('./partials/_footer'); %>
     </div>

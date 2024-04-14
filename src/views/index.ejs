@@ -32,7 +32,7 @@
             <th>Type</th>
             <th>Sub-Type</th>
             <th>Color</th>
-            <th>Fave</th>
+            <th>Options</th>
             <th>Edit</th>
           </tr>
           <% variables.forEach(function(v) { %>
@@ -42,7 +42,7 @@
               <td><%= v.type %></td>
               <td><%= v.subtype %></td>
               <td style="color:<%= v.color %>">&#9632;</td>
-              <td><%= v.shortcut == '1' ? '✅' : '' %></td>
+              <td><%= v.shortcut == '1' ? '✅' : '' %><%= v.morning == '1' ? '🌞' : '' %><%= v.evening == '1' ? '😴' : '' %></td>
               <td><a href="/edit/variable/<%= v._id %>">Edit</a></td>
             </tr>
           <% }) %>

@@ -4,7 +4,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script> 
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
   <body>
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
@@ -14,8 +13,6 @@
         <div><canvas id="booleanChart"></canvas></div>
         
         <script type="text/javascript">
-          const autocolors = window['chartjs-plugin-autocolors'];
-          Chart.register(autocolors);
 
           const scalarCtx = document.getElementById("scalarChart").getContext("2d");
           const scalarChart = new Chart(scalarCtx, {
