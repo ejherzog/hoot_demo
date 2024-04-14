@@ -20,6 +20,11 @@
           const highLowChart = new Chart(highLowCtx, {
             type: 'bar',
             options: {
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
               scales: {
                 x: {
                   type: 'time',
@@ -44,6 +49,11 @@
           const booleanChart = new Chart(booleanCtx, {
             type: 'bar',
             options: {
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
               scales: {
                 x: {
                   type: 'time',
@@ -67,6 +77,11 @@
           const scalarChart = new Chart(scalarCtx, {
             type: 'bar',
             options: {
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
               scales: {
                 x: {
                   type: 'time',
