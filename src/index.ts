@@ -1,10 +1,9 @@
 import express, { Express, Request, Response } from "express";
-import ngrok from "@ngrok/ngrok";
 import Datastore from "nedb";
 import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
-import { insertRecord, generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData } from "./functions";
+import { generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData } from "./functions";
 
 const app: Express = express();
 
@@ -129,6 +128,7 @@ app.get('/shortcuts', (req: Request, res: Response) => {
 
     const varData = variables.getAllData()
         .filter(v => !v.deleted && v.shortcut == '1')
+        .sort((a, b) => a.variable.localeCompare(b.variable))
         .map(v => {
             return { variable: v.variable, color: v.color, category: catMap.get(v.category)!.name };
         })
@@ -224,12 +224,12 @@ app.post('/add/variable', (req: Request, res: Response) => {
 });
 
 app.post('/add/boolean', (req: Request, res: Response) => {
-    insertRecord(req.body, records, 'boolean');
+    records.insert(req.body);
     res.redirect('/');
 });
 
 app.post('/add/scalar', (req: Request, res: Response) => {
-    insertRecord(req.body, records, 'scalar');
+    records.insert(req.body);
     res.redirect('/');
 });
 
@@ -239,7 +239,12 @@ app.post('/edit/variable/:id', (req: Request, res: Response) => {
 });
 
 app.post('/edit/category/:id', (req: Request, res: Response) => {
+    var cat_to_update = categories.getAllData().find(c => c._id == req.params.id);
     categories.update({ _id: req.params.id }, req.body);
+    if (cat_to_update.color != req.body.color) {
+        // update color for all variables in this category
+        variables.update({ category: req.params.id, shortcut: "0" }, { $set: { color: req.body.color }}, { multi: true });
+    }
     res.redirect('/');
 });
 

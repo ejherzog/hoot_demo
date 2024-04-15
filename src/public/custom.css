@@ -1,46 +1,11 @@
 .shortcut {
     margin: 0.25em;
     width: 100%;
-    color: #FFF;
+    color: #000;
 }
 
 .grouping {
     padding: 1rem;
     margin-bottom: 1rem;
     display: inline-block;
-}
-
-.btn-purple {
-    color:#fff;
-    background-color:#670e5e;
-    border-color:#670e5e
-}
-
-.btn-purple:hover{
-    color:#fff;
-    background-color:#510b4a;
-    border-color:#510b4a
-}
-
-.btn-purple.focus,.btn-purple:focus{
-    color:#fff;
-    background-color:#582152;
-    border-color:#582152;
-    box-shadow:0 0 0 .2rem rgba(106, 45, 113, 0.5)
-}
-
-.btn-purple.disabled,.btn-purple:disabled{
-    color:#fff;
-    background-color:#6c757d;
-    border-color:#6c757d
-}
-
-.btn-purple:not(:disabled):not(.disabled).active,.btn-purple:not(:disabled):not(.disabled):active,.show>.btn-purple.dropdown-toggle{
-    color:#fff;
-    background-color:#510b4a;
-    border-color:#510b4a
-}
-
-.btn-purple:not(:disabled):not(.disabled).active:focus,.btn-purple:not(:disabled):not(.disabled):active:focus,.show>.btn-purple.dropdown-toggle:focus{
-    box-shadow:0 0 0 .2rem rgba(125, 68, 126, 0.5)
 }

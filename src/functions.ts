@@ -2,12 +2,6 @@ import moment from "moment";
 import { Point } from "./classes";
 import Datastore from "nedb";
 
-export function insertRecord(newRecord: any, records: Datastore, type: string) { 
-    newRecord['data'] = newRecord[type];
-    delete newRecord[type];
-    records.insert(newRecord);
-}
-
 /**
  * 
  * @param categoryMap variable -> category
