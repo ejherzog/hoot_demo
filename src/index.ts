@@ -260,18 +260,3 @@ app.use(express.static(__dirname + '/public'));
 app.listen(process.env.PORT, () => {
     console.log(`[server]: Server is running at http://localhost:${process.env.PORT}`);
 });
-
-if (process.env.ENV == "prod") {
-    (async function() {
-        // Establish connectivity
-        const listener = await ngrok.forward({ 
-            addr: `${process.env.PORT}`, 
-            authtoken_from_env: true,
-            basic_auth: process.env.AUTH,
-            domain: process.env.DOMAIN
-        });
-
-        // Output ngrok url to console
-        console.log(`Ingress established at: ${listener.url()}`);
-    })();
-}
