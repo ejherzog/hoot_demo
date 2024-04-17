@@ -225,12 +225,12 @@ app.post('/add/variable', (req: Request, res: Response) => {
 
 app.post('/add/boolean', (req: Request, res: Response) => {
     records.insert(req.body);
-    res.redirect('/');
+    res.redirect('/chart');
 });
 
 app.post('/add/scalar', (req: Request, res: Response) => {
     records.insert(req.body);
-    res.redirect('/');
+    res.redirect('/chart');
 });
 
 app.post('/edit/variable/:id', (req: Request, res: Response) => {
