@@ -21,7 +21,7 @@ export function generateStackedBooleanBarData(categoryMap: Map<string, string>,
                 recordsByDayMap.set(record.variable, new Map());
             }
             var dayCountMap = recordsByDayMap.get(record.variable)!;
-            const currentDay = moment(record.updatedAt).startOf('day').valueOf();
+            const currentDay = dateRecorded(record);
             if (!dayCountMap.has(currentDay)) {
                 dayCountMap.set(currentDay, 0);
             }
@@ -59,7 +59,7 @@ export function generateStackedHighLowData(categoryMap: Map<string, string>, pos
         .filter(record => colorMap.get(record.variable) != undefined)
         .forEach(record => {
             const finalData: number = posNegMap.get(record.variable) ? parseInt(record.data) : parseInt(record.data) * -1;
-            const datapoint = new Point(moment(record.updatedAt).valueOf(), finalData);
+            const datapoint = new Point(dateRecorded(record), finalData);
             if (!highLowData.has(record.variable)) {
                 highLowData.set(record.variable, []);
             }
@@ -85,8 +85,7 @@ export function generateScalarData(colorMap: Map<string, string>,
     records
         .filter(record => colorMap.has(record.variable))
         .forEach(record => {
-            const finalData: number = posNegMap.get(record.variable) ? parseInt(record.data) : parseInt(record.data) * -1;
-            const datapoint = new Point(moment(record.updatedAt).valueOf(), finalData)
+            const datapoint = new Point(dateRecorded(record), parseInt(record.data))
             if (!scalarData.has(record.variable)) {
                 scalarData.set(record.variable, []);
             }
@@ -96,8 +95,14 @@ export function generateScalarData(colorMap: Map<string, string>,
         scalarSets.push({
             backgroundColor: colorMap.get(variable),
             label: variable,
-            data: data
+            data: data,
+            yAxisID: variable == 'Cycle Day' ? 'yc' : 'y'
         });
     });
     return scalarSets;
+}
+
+function dateRecorded(record: any): number {
+    const dateToUse = record.timestamp || record.updatedAt;
+    return moment(dateToUse).startOf('day').valueOf();
 }

@@ -71,6 +71,22 @@ app.get('/add', (req: Request, res: Response) => {
       });
 });
 
+app.get('/retro', (req: Request, res: Response) => {
+    const today = moment().format("YYYY-MM-DD");
+    const varData = variables.getAllData();
+    const catData = categories.getAllData().map(c => {
+        return {
+            id: c._id,
+            name: c.name
+        };
+    });
+    res.render('retro', {
+        variables: varData,
+        categories: catData,
+        today: today
+      });
+});
+
 app.get('/edit/category/:id', (req: Request, res: Response) => {
     var cat_to_edit = categories.getAllData().find(c => c._id == req.params.id);
     res.render('edit', {
@@ -223,13 +239,17 @@ app.post('/add/variable', (req: Request, res: Response) => {
     res.redirect('/add');
 });
 
-app.post('/add/boolean', (req: Request, res: Response) => {
+app.post('/add', (req: Request, res: Response) => {
     records.insert(req.body);
     res.redirect('/chart');
 });
 
-app.post('/add/scalar', (req: Request, res: Response) => {
-    records.insert(req.body);
+app.post('/retro', (req: Request, res: Response) => {
+    records.insert({
+        variable: req.body.variable,
+        data: req.body.data,
+        timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
+    });
     res.redirect('/chart');
 });
 
