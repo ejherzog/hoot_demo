@@ -7,7 +7,7 @@
       <hr>
       <section class="w-75">
         <h4>Add Boolean Record</h4>
-        <form action="/add/boolean" method="POST">
+        <form action="/add" method="POST">
           <div class="form-group">
             <label for="variable">Variable:</label>
             <select class="form-select" name="variable" id="variable" required>
@@ -20,7 +20,7 @@
             </select>
           </div>
           <div class="form-group">
-            <input type="radio" id="data" name="data" value="1">
+            <input type="radio" id="data" name="data" value="1" checked>
             <label for="data">Yes</label><br>
             <input type="radio" id="data" name="data" value="0">
             <label for="data">No</label>
@@ -31,7 +31,7 @@
       <hr>
       <section class="w-75">
         <h4>Add Scalar Record</h4>
-        <form action="/add/scalar" method="POST">
+        <form action="/add" method="POST">
             <div class="form-group">
                 <label for="variable">Variable:</label>
                 <select name="variable" id="variable" required>
@@ -114,7 +114,6 @@
           <button type="submit" class="btn btn-primary">Add Category</button>
         </form>
       </section>
-      <hr>
       <%- include('./partials/_footer'); %>
     </div>
   </body>
