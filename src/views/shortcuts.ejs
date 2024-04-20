@@ -10,7 +10,7 @@
             <div class="card grouping">
               <h5 class="card-title"><%= category %></h5>
               <% variables.forEach(variable => { %>
-                <form action="/add/boolean" method="POST">
+                <form action="/add" method="POST">
                   <input type="hidden" id="variable" name="variable" value="<%= variable.variable %>">
                   <input type="hidden" id="data" name="data" value="1">
                   <button type="submit" class="btn shortcut" style="background-color:<%= variable.color %>"><%= variable.variable %></button>
