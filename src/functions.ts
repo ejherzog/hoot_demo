@@ -21,7 +21,7 @@ export function generateStackedBooleanBarData(categoryMap: Map<string, string>,
                 recordsByDayMap.set(record.variable, new Map());
             }
             var dayCountMap = recordsByDayMap.get(record.variable)!;
-            const currentDay = dateRecorded(record);
+            const currentDay = dayRecorded(record);
             if (!dayCountMap.has(currentDay)) {
                 dayCountMap.set(currentDay, 0);
             }
@@ -59,7 +59,7 @@ export function generateStackedHighLowData(categoryMap: Map<string, string>, pos
         .filter(record => colorMap.get(record.variable) != undefined)
         .forEach(record => {
             const finalData: number = posNegMap.get(record.variable) ? parseInt(record.data) : parseInt(record.data) * -1;
-            const datapoint = new Point(dateRecorded(record), finalData);
+            const datapoint = new Point(dayRecorded(record), finalData);
             if (!highLowData.has(record.variable)) {
                 highLowData.set(record.variable, []);
             }
@@ -77,15 +77,15 @@ export function generateStackedHighLowData(categoryMap: Map<string, string>, pos
     return highLowSets;
 }
 
-export function generateScalarData(colorMap: Map<string, string>,
-    posNegMap: Map<string, boolean>, records: any[]): any[] {
+export function generateScalarData(colorMap: Map<string, string>, records: any[]): any[] {
 
     var scalarSets: any[] = [];
     var scalarData = new Map<string, Point[]>();
     records
-        .filter(record => colorMap.has(record.variable))
+        .filter(record => {
+            return colorMap.has(record.variable)})
         .forEach(record => {
-            const datapoint = new Point(dateRecorded(record), parseInt(record.data))
+            const datapoint = new Point(dayRecorded(record), parseInt(record.data));
             if (!scalarData.has(record.variable)) {
                 scalarData.set(record.variable, []);
             }
@@ -102,7 +102,30 @@ export function generateScalarData(colorMap: Map<string, string>,
     return scalarSets;
 }
 
-function dateRecorded(record: any): number {
+export function generateTemperatureData(records: any[], color: string) {
+
+    var datapoints: Point[] = [];
+    records
+        .filter(record => record.variable == 'Temperature')
+        .forEach(record => {
+            const datapoint = new Point(timeRecorded(record), parseFloat(record.data));
+            datapoints.push(datapoint);
+        });
+    
+    datapoints.sort((a, b) => a.x - b.x);
+    return [{
+        backgroundColor: color,
+        label: 'Temperature',
+        data: datapoints
+    }];
+}
+
+function timeRecorded(record: any): number {
+    const timeToUse = record.timestamp || record.updatedAt;
+    return moment(timeToUse).valueOf();
+}
+
+function dayRecorded(record: any): number {
     const dateToUse = record.timestamp || record.updatedAt;
     return moment(dateToUse).startOf('day').valueOf();
 }

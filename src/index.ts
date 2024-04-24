@@ -3,7 +3,7 @@ import Datastore from "nedb";
 import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
-import { generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData } from "./functions";
+import { generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData, generateTemperatureData } from "./functions";
 
 const app: Express = express();
 
@@ -207,9 +207,8 @@ app.get('/chart', (req: Request, res: Response) => {
                 highLowColorMap.set(variable.variable, catColorMap.get(variable.category)!);
                 highLowCatMap.set(variable.variable, variable.category);
                 posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
-            } else if (variable.type == 'scalar') {
+            } else if (variable.subtype == 'hours' || variable.subtype == 'number') {
                 scalarColorMap.set(variable.variable, catColorMap.get(variable.category)!);
-                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             } else if (variable.type == 'boolean') {
                 booleanColorMap.set(variable.variable, catColorMap.get(variable.category)!);
                 booleanCatMap.set(variable.variable, variable.category);
@@ -219,13 +218,15 @@ app.get('/chart', (req: Request, res: Response) => {
     
     const allRecords = records.getAllData();
     var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, allRecords);
-    var scalarSets = generateScalarData(scalarColorMap, posNegMap, allRecords);
+    var scalarSets = generateScalarData(scalarColorMap, allRecords);
     var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, allRecords);
+    var tempSets = generateTemperatureData(allRecords, catColorMap.get('t0ANSfmglzv6cU8s')!);
 
     res.render('chart', {
         highLowData: highLowSets,
         scalarData: scalarSets,
-        booleanData: booleanSets
+        booleanData: booleanSets,
+        tempData: tempSets
     });
 });
 
