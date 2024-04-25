@@ -21,6 +21,10 @@ const variables = new Datastore({ filename: 'variables.db', autoload: true });
 const records = new Datastore({ filename: 'records.db', timestampData: true, autoload: true });
 
 app.get('/', (req: Request, res: Response) => {
+    categories.loadDatabase();
+    variables.loadDatabase();
+    records.loadDatabase();
+
     res.render('index', getIndexData(categories, variables, records));
 });
 
@@ -37,10 +41,14 @@ app.get('/shortcuts', (req: Request, res: Response) => {
 });
 
 app.get('/daily', (req: Request, res: Response) => {
+    labels.loadDatabase();
     res.render('daily', getDailyFormData(labels, variables));
 });
 
 app.get('/chart', (req: Request, res: Response) => {
+    categories.loadDatabase();
+    variables.loadDatabase();
+    records.loadDatabase();
     res.render('chart', generateChartData(categories, variables, records));
 });
 
