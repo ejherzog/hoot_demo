@@ -273,7 +273,7 @@ app.post('/daily', (req: Request, res: Response) => {
     for (const [key, value] of Object.entries(req.body)) {
         records.insert({ variable: key, data: value });
     }
-    res.redirect('/');
+    res.redirect('/chart');
 });
 
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
