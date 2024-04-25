@@ -97,6 +97,54 @@
           <button type="submit" class="btn btn-primary">Submit Edits</button>
         </form>
         </section>
+      <% } else if (type == 'boolean') { %>
+        <section class="w-50">
+          <h4>Edit Record: <i><%= record.variable %></i></h4>
+        <form action="/edit/record/<%= record._id %>" method="POST">
+          <div class="form-group">
+            <input type="radio" id="data" name="data" value="1" <%- record.data == "1" ? 'checked' : ''%>>
+            <label for="data">Yes</label><br>
+            <input type="radio" id="data" name="data" value="0" <%- record.data == "0" ? 'checked' : ''%>>
+            <label for="data">No</label>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" value="<%= record_date %>"/>
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" name="time" id="time" value="<%= record_time %>" />
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Update</button>
+        </form>
+        </section>
+        <hr>
+        <form action="/delete/record/<%= record._id %>" method="POST">
+          <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
+        </form>
+      <% } else if (type == 'scalar') { %>
+        <section class="w-50">
+          <h4>Edit Record: <i><%= record.variable %></i></h4>
+        <form action="/edit/record/<%= record._id %>" method="POST">
+          <div class="form-group">
+            <label for="data">Number:</label>
+            <input type="number" id="data" name="data" min="0" step="0.1" value="<%= record.data %>">
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" value="<%= record_date %>"/>
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" name="time" id="time" value="<%= record_time %>" />
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Update</button>
+        </form>
+      </section>
+      <hr>
+      <form action="/delete/record/<%= record._id %>" method="POST">
+        <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
+      </form>
       <% } %>
     <%- include('./partials/_footer'); %>
   </div>

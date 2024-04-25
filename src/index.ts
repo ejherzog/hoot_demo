@@ -3,7 +3,10 @@ import Datastore from "nedb";
 import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
-import { generateStackedBooleanBarData, generateStackedHighLowData, generateScalarData, generateTemperatureData } from "./functions";
+import { generateChartData } from "./engine/chart";
+import { getAllData, getIndexData, getShortcutData } from "./engine/data";
+import { getAddData, getRetroFormData, getDailyFormData } from "./engine/forms";
+import { getCategoryToEdit, getRecordToEdit, getVariableToEdit } from "./engine/edit";
 
 const app: Express = express();
 
@@ -18,216 +21,43 @@ const variables = new Datastore({ filename: 'variables.db', autoload: true });
 const records = new Datastore({ filename: 'records.db', timestampData: true, autoload: true });
 
 app.get('/', (req: Request, res: Response) => {
-    categories.loadDatabase();
-    variables.loadDatabase();
-    records.loadDatabase();
-
-    const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
-
-    const catMap: Map<string, string> = new Map();
-    categoryData.forEach(c => {
-        catMap.set(c._id, c.name);
-    });
-
-    const variableData = variables.getAllData()
-        .filter(v => !v.deleted)
-        .sort((a, b) => a.category.localeCompare(b.category))
-        .map(v => {
-            const variable = v;
-            variable.category = catMap.get(v.category);   
-            return variable;
-        });
-
-    const fortyEightHoursAgo = moment().subtract(48, 'hours').startOf('day').valueOf();
-
-    const recordData = records.getAllData()
-        .filter(r => r.updatedAt > fortyEightHoursAgo)
-        .sort((a, b) => b.updatedAt - a.updatedAt)
-        .map(record => {
-            return {
-                'variable': record['variable'],
-                'data': record['data'],
-                'moment': moment(record['updatedAt']).format("MMM Do h:mm A").toString()
-            }
-        });
-    res.render('index', {
-        records: recordData,
-        variables: variableData,
-        categories: categoryData
-      });
+    res.render('index', getIndexData(categories, variables, records));
 });
 
 app.get('/add', (req: Request, res: Response) => {
-    const varData = variables.getAllData();
-    const catData = categories.getAllData().map(c => {
-        return {
-            id: c._id,
-            name: c.name
-        };
-    });
-    res.render('add', {
-        variables: varData,
-        categories: catData
-      });
+    res.render('add', getAddData(categories, variables));
 });
 
 app.get('/retro', (req: Request, res: Response) => {
-    const today = moment().format("YYYY-MM-DD");
-    const varData = variables.getAllData();
-    const catData = categories.getAllData().map(c => {
-        return {
-            id: c._id,
-            name: c.name
-        };
-    });
-    res.render('retro', {
-        variables: varData,
-        categories: catData,
-        today: today
-      });
-});
-
-app.get('/edit/category/:id', (req: Request, res: Response) => {
-    var cat_to_edit = categories.getAllData().find(c => c._id == req.params.id);
-    res.render('edit', {
-        type: 'category',
-        category: cat_to_edit
-    });
-});
-
-app.get('/edit/variable/:id', (req: Request, res: Response) => {
-
-    var var_to_edit: any = {};
-    const catData = categories.getAllData().map(c => {
-        return {
-            id: c._id,
-            name: c.name,
-            color: c.color
-        };
-    });
-    var color;
-    const var_types: string[] = [];
-    const sub_types: string[] = [];
-    variables.getAllData()
-        .forEach(variable => {
-            var_types.push(variable.type);
-            sub_types.push(variable.subtype);
-            if (variable._id == req.params.id) {
-                var_to_edit = variable;
-                if (variable.color != "#000000") {
-                    color = variable.color;
-                }
-            }
-        });
-
-    if (!color) {
-        color = catData.find(c => c.name == var_to_edit.category || c.id == var_to_edit.category)!.color;
-    }
-    res.render('edit', {
-        type: 'variable',
-        color: color,
-        variable: var_to_edit,
-        categories: catData,
-        types: new Set(var_types),
-        subtypes: new Set(sub_types)
-    });
+    res.render('retro', getRetroFormData(categories, variables));
 });
 
 app.get('/shortcuts', (req: Request, res: Response) => {
-
-    const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
-
-    const catMap = new Map<string, { name: string, color: string }>();
-    categoryData.forEach(c => {
-        catMap.set(c._id, { name: c.name, color: c.color });
-    });
-
-    const varData = variables.getAllData()
-        .filter(v => !v.deleted && v.shortcut == '1')
-        .sort((a, b) => a.variable.localeCompare(b.variable))
-        .map(v => {
-            return { variable: v.variable, color: v.color, category: catMap.get(v.category)!.name };
-        })
-        .sort((a, b) => a.category.localeCompare(b.category));
-
-    const shortcutData: Map<string, { variable: string, color: string}[]> = new Map();
-    varData.forEach(v => {
-        if (!shortcutData.has(v.category!)) {
-            shortcutData.set(v.category!, []);
-        }
-        shortcutData.get(v.category!)!.push({ variable: v.variable, color: v.color });
-    });
-
-    res.render('shortcuts', {
-        shortcutData: shortcutData
-    });
+    res.render('shortcuts', { shortcutData: getShortcutData(categories, variables)});
 });
 
 app.get('/daily', (req: Request, res: Response) => {
-    const highLowLabels = labels.getAllData().find(label => label.type == 'high_low').labels;
-    const morningVariables: any[] = [];
-    const eveningVariables: any[] = [];
-    variables.getAllData()
-        .filter(v => v.subtype)
-        .sort((a, b) => a.subtype.localeCompare(b.subtype))
-        .forEach(variable => {
-            if (variable.morning == "1") {
-                morningVariables.push({ name: variable.variable, type: variable.subtype });
-            }
-            if (variable.evening == "1") {
-                eveningVariables.push({ name: variable.variable, type: variable.subtype });
-            }
-        });
-    res.render('daily', {
-        highLowLabels,
-        morningVariables,
-        eveningVariables
-    });
+    res.render('daily', getDailyFormData(labels, variables));
 });
 
 app.get('/chart', (req: Request, res: Response) => {
+    res.render('chart', generateChartData(categories, variables, records));
+});
 
-    var catColorMap = new Map<string, string>(); // category ID -> color
-    categories.getAllData()
-        .forEach(category => {
-            catColorMap.set(category._id, category.color);
-        });
+app.get('/all', (req: Request, res: Response) => {
+    res.render('all', { records: getAllData(records.getAllData()) });
+});
 
-    var highLowColorMap: Map<string, string> = new Map();
-    var scalarColorMap: Map<string, string> = new Map();
-    var booleanColorMap: Map<string, string> = new Map();
+app.get('/edit/category/:id', (req: Request, res: Response) => {
+    res.render('edit', getCategoryToEdit(categories, req.params.id));
+});
 
-    var highLowCatMap: Map<string, string> = new Map();
-    var booleanCatMap: Map<string, string> = new Map();
-    var posNegMap: Map<string, boolean> = new Map();
+app.get('/edit/variable/:id', (req: Request, res: Response) => {
+    res.render('edit', getVariableToEdit(categories, variables, req.params.id));
+});
 
-    variables.getAllData()
-        .forEach(variable => {
-            if (variable.subtype == 'high_low') {
-                highLowColorMap.set(variable.variable, catColorMap.get(variable.category)!);
-                highLowCatMap.set(variable.variable, variable.category);
-                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
-            } else if (variable.subtype == 'hours' || variable.subtype == 'number') {
-                scalarColorMap.set(variable.variable, catColorMap.get(variable.category)!);
-            } else if (variable.type == 'boolean') {
-                booleanColorMap.set(variable.variable, catColorMap.get(variable.category)!);
-                booleanCatMap.set(variable.variable, variable.category);
-                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
-            }
-        });
-    
-    const allRecords = records.getAllData();
-    var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, allRecords);
-    var scalarSets = generateScalarData(scalarColorMap, allRecords);
-    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, allRecords);
-    var tempSets = generateTemperatureData(allRecords, catColorMap.get('t0ANSfmglzv6cU8s')!);
-
-    res.render('chart', {
-        highLowData: highLowSets,
-        scalarData: scalarSets,
-        booleanData: booleanSets,
-        tempData: tempSets
-    });
+app.get('/edit/record/:id', (req: Request, res: Response) => {
+    res.render('edit', getRecordToEdit(variables, records, req.params.id));
 });
 
 app.post('/add/category', (req: Request, res: Response) => {
@@ -269,6 +99,16 @@ app.post('/edit/category/:id', (req: Request, res: Response) => {
     res.redirect('/');
 });
 
+app.post('/edit/record/:id', (req: Request, res: Response) => {
+    records.update({ _id: req.params.id }, {
+        $set: { 
+            data: req.body.data,
+            timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
+        }
+    });
+    res.redirect('/all');
+});
+
 app.post('/daily', (req: Request, res: Response) => {
     for (const [key, value] of Object.entries(req.body)) {
         records.insert({ variable: key, data: value });
@@ -279,6 +119,11 @@ app.post('/daily', (req: Request, res: Response) => {
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
     variables.update({ _id: req.params.id }, { $set: { deleted: true }} );
     res.redirect('/');
+});
+
+app.post('/delete/record/:id', (req: Request, res: Response) => {
+    records.remove({ _id: req.params.id });
+    res.redirect('/chart');
 });
 
 app.use(express.static(__dirname + '/public'));

@@ -1,6 +1,52 @@
 import moment from "moment";
-import { Point } from "./classes";
 import Datastore from "nedb";
+import { Point } from "./classes";
+import { timeToUse } from "./utils";
+
+export function generateChartData(categories: Datastore, variables: Datastore, records: Datastore): any {
+
+    var catColorMap = new Map<string, string>(); // category ID -> color
+    categories.getAllData()
+        .forEach(category => {
+            catColorMap.set(category._id, category.color);
+        });
+
+    var highLowColorMap: Map<string, string> = new Map();
+    var scalarColorMap: Map<string, string> = new Map();
+    var booleanColorMap: Map<string, string> = new Map();
+
+    var highLowCatMap: Map<string, string> = new Map();
+    var booleanCatMap: Map<string, string> = new Map();
+    var posNegMap: Map<string, boolean> = new Map();
+
+    variables.getAllData()
+        .forEach(variable => {
+            if (variable.subtype == 'high_low') {
+                highLowColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                highLowCatMap.set(variable.variable, variable.category);
+                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
+            } else if (variable.subtype == 'hours' || variable.subtype == 'number') {
+                scalarColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+            } else if (variable.type == 'boolean') {
+                booleanColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                booleanCatMap.set(variable.variable, variable.category);
+                posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
+            }
+        });
+    
+    const allRecords = records.getAllData();
+    var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, allRecords);
+    var scalarSets = generateScalarData(scalarColorMap, allRecords);
+    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, allRecords);
+    var tempSets = generateTemperatureData(allRecords, catColorMap.get('t0ANSfmglzv6cU8s')!);
+
+    return {
+        highLowData: highLowSets,
+        scalarData: scalarSets,
+        booleanData: booleanSets,
+        tempData: tempSets
+    };
+}
 
 /**
  * 
@@ -10,7 +56,7 @@ import Datastore from "nedb";
  * @param records all records from database
  * @returns array of { color, variable label, category stack, data points by day }
  */
-export function generateStackedBooleanBarData(categoryMap: Map<string, string>, 
+function generateStackedBooleanBarData(categoryMap: Map<string, string>, 
     posNegMap: Map<string, boolean>, colorMap: Map<string, string>, records: any[]): any[] {
 
     var recordsByDayMap: Map<string, Map<number, number>> = new Map();
@@ -50,7 +96,7 @@ export function generateStackedBooleanBarData(categoryMap: Map<string, string>,
     return fullDataSet;
 }
 
-export function generateStackedHighLowData(categoryMap: Map<string, string>, posNegMap: Map<string, boolean>,
+function generateStackedHighLowData(categoryMap: Map<string, string>, posNegMap: Map<string, boolean>,
     colorMap: Map<string, string>, records: any[]): any[] {
 
     var highLowSets: any[] = [];
@@ -77,7 +123,7 @@ export function generateStackedHighLowData(categoryMap: Map<string, string>, pos
     return highLowSets;
 }
 
-export function generateScalarData(colorMap: Map<string, string>, records: any[]): any[] {
+function generateScalarData(colorMap: Map<string, string>, records: any[]): any[] {
 
     var scalarSets: any[] = [];
     var scalarData = new Map<string, Point[]>();
@@ -102,7 +148,7 @@ export function generateScalarData(colorMap: Map<string, string>, records: any[]
     return scalarSets;
 }
 
-export function generateTemperatureData(records: any[], color: string) {
+function generateTemperatureData(records: any[], color: string): any[] {
 
     var datapoints: Point[] = [];
     records
@@ -123,11 +169,9 @@ export function generateTemperatureData(records: any[], color: string) {
 }
 
 function timeRecorded(record: any): number {
-    const timeToUse = record.timestamp || record.updatedAt;
-    return moment(timeToUse).valueOf();
+    return moment(timeToUse(record)).valueOf();
 }
 
-function dayRecorded(record: any): number {
-    const dateToUse = record.timestamp || record.updatedAt;
-    return moment(dateToUse).startOf('day').valueOf();
+function dayRecorded(record: any): number {;
+    return moment(timeToUse(record)).startOf('day').valueOf();
 }
