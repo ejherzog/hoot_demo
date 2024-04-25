@@ -116,7 +116,9 @@ export function generateTemperatureData(records: any[], color: string) {
     return [{
         backgroundColor: color,
         label: 'Temperature',
-        data: datapoints
+        data: datapoints,
+        pointRadius: 10,
+        pointStyle: 'rectRounded'
     }];
 }
 
