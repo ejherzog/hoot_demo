@@ -1,51 +1,99 @@
 import moment from "moment";
 import Datastore from "nedb";
 import { Point } from "./classes";
-import { timeToUse } from "./utils";
+import { timeToUse, timestamp } from "./utils";
 
 export function generateChartData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
-    var catColorMap = new Map<string, string>(); // category ID -> color
+    const twoWeeksAgo = moment().subtract(2, 'weeks').startOf('day').valueOf();
+
+    var categoryById = new Map<string, any>(); // category ID -> {_id, color, name, group}
     categories.getAllData()
         .forEach(category => {
-            catColorMap.set(category._id, category.color);
+            categoryById.set(category._id, category);
         });
-
+    categoryById.set('none', {name: 'Uncategorized', _id: 'none', color: '#cdbab6'});
+    
     var highLowColorMap: Map<string, string> = new Map();
     var scalarColorMap: Map<string, string> = new Map();
     var booleanColorMap: Map<string, string> = new Map();
 
+    var categoryMap: Map<string, string> = new Map();
     var highLowCatMap: Map<string, string> = new Map();
     var booleanCatMap: Map<string, string> = new Map();
     var posNegMap: Map<string, boolean> = new Map();
 
     variables.getAllData()
         .forEach(variable => {
+            categoryMap.set(variable.variable, variable.category || 'none');
             if (variable.subtype == 'high_low') {
-                highLowColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                highLowColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
                 highLowCatMap.set(variable.variable, variable.category);
                 posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             } else if (variable.subtype == 'hours' || variable.subtype == 'number') {
-                scalarColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                scalarColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
             } else if (variable.type == 'boolean') {
-                booleanColorMap.set(variable.variable, catColorMap.get(variable.category)!);
+                booleanColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
                 booleanCatMap.set(variable.variable, variable.category);
                 posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             }
         });
     
-    const allRecords = records.getAllData();
-    var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, allRecords);
-    var scalarSets = generateScalarData(scalarColorMap, allRecords);
-    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, allRecords);
-    var tempSets = generateTemperatureData(allRecords, catColorMap.get('t0ANSfmglzv6cU8s')!);
+    const recentRecords = records.getAllData().filter(record => timestamp(record) > twoWeeksAgo);
+    var categorySets = generateCategoryData(categoryMap, categoryById, recentRecords);
+    var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, recentRecords);
+    var scalarSets = generateScalarData(scalarColorMap, recentRecords);
+    var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, recentRecords);
+    var tempSets = generateTemperatureData(recentRecords, categoryById.get('t0ANSfmglzv6cU8s')!.color);
 
     return {
+        categoryData: categorySets,
         highLowData: highLowSets,
         scalarData: scalarSets,
         booleanData: booleanSets,
         tempData: tempSets
     };
+}
+
+function generateCategoryData(categoryMap: Map<string, string>, categoryById: Map<String, any>, records: any[]): any[] {
+
+    var recordsByDayMap: Map<string, Map<number, number>> = new Map();
+    records
+        .filter(record => record.variable != 'Temperature')
+        .forEach(record => {
+            const category = categoryMap.get(record.variable);
+            if (category) {
+                if (!recordsByDayMap.has(category)) {
+                    recordsByDayMap.set(category, new Map());
+                }
+                var dayCountMap = recordsByDayMap.get(category)!;
+                const currentDay = dayRecorded(record);
+                if (!dayCountMap.has(currentDay)) {
+                    dayCountMap.set(currentDay, 0);
+                }
+                const newCount = dayCountMap.get(currentDay)! + parseInt(record.data);
+                dayCountMap.set(currentDay, newCount);
+                recordsByDayMap.set(category, dayCountMap);
+            }
+    });
+
+    var categoryDataSet: any[] = [];
+
+    recordsByDayMap
+        .forEach((dayCountMap, category) => {
+            var dayCountArray: Point[] = [];
+            dayCountMap.forEach((count, date) => {
+                // const finalCount: number = posNegMap.get(variable) ? count : count * -1;
+                dayCountArray.push(new Point(date, count));
+            });
+            categoryDataSet.push({
+                backgroundColor: categoryById.get(category)!.color,
+                label: categoryById.get(category)!.name,
+                data: dayCountArray.sort((a, b) => a.x - b.x)
+            });
+        });
+
+    return categoryDataSet;
 }
 
 /**
@@ -93,6 +141,7 @@ function generateStackedBooleanBarData(categoryMap: Map<string, string>,
             });
         });
 
+    fullDataSet.sort((a, b) => a.stack.localeCompare(b.stack));
     return fullDataSet;
 }
 
@@ -119,7 +168,8 @@ function generateStackedHighLowData(categoryMap: Map<string, string>, posNegMap:
             stack: categoryMap.get(variable)
         });
     });
-
+    
+    highLowSets.sort((a, b) => a.stack.localeCompare(b.stack));
     return highLowSets;
 }
 
