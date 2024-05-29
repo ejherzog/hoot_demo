@@ -80,7 +80,7 @@ app.post('/add/variable', (req: Request, res: Response) => {
 
 app.post('/add', (req: Request, res: Response) => {
     records.insert(req.body);
-    res.redirect('/charts');
+    res.redirect('/all');
 });
 
 app.post('/retro', (req: Request, res: Response) => {
@@ -89,7 +89,7 @@ app.post('/retro', (req: Request, res: Response) => {
         data: req.body.data,
         timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
     });
-    res.redirect('/charts');
+    res.redirect('/all');
 });
 
 app.post('/edit/variable/:id', (req: Request, res: Response) => {
@@ -121,7 +121,7 @@ app.post('/daily', (req: Request, res: Response) => {
     for (const [key, value] of Object.entries(req.body)) {
         records.insert({ variable: key, data: value });
     }
-    res.redirect('/charts');
+    res.redirect('/all');
 });
 
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
@@ -131,7 +131,7 @@ app.post('/delete/variable/:id', (req: Request, res: Response) => {
 
 app.post('/delete/record/:id', (req: Request, res: Response) => {
     records.remove({ _id: req.params.id });
-    res.redirect('/charts');
+    res.redirect('/all');
 });
 
 app.use(express.static(__dirname + '/public'));

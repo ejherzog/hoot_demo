@@ -6,64 +6,70 @@
     <div class="container mt-2">
       <hr>
       <section>
-        <table class="table table-sm table-striped">
-          <tr>
-            <th>Category</th>
-            <th>Group</th>
-            <th>Color</th>
-            <th>Edit</th>
-          </tr>
-          <% categories.forEach(function(c) { %>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped">
             <tr>
-              <td><%= c.name %></td>
-              <td><%= c.group %></td>
-              <td style="color:<%= c.color %>">&#9632;</td>
-              <td><a href="/edit/category/<%= c._id %>">Edit</a></td>
+              <th>Category</th>
+              <th>Group</th>
+              <th>Color</th>
+              <th>Edit</th>
             </tr>
-          <% }) %>
-        </table>
+            <% categories.forEach(function(c) { %>
+              <tr>
+                <td><%= c.name %></td>
+                <td><%= c.group %></td>
+                <td style="color:<%= c.color %>">&#9632;</td>
+                <td><a href="/edit/category/<%= c._id %>">Edit</a></td>
+              </tr>
+            <% }) %>
+          </table>
+        </div>
       </section>
       <hr>
       <section>
-        <table class="table table-sm table-striped">
-          <tr>
-            <th>Variable</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Sign</th>
-            <th>Color</th>
-            <th>Options</th>
-            <th>Edit</th>
-          </tr>
-          <% variables.forEach(function(v) { %>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped">
             <tr>
-              <td><%= v.variable %></td>
-              <td><%= v.category %></td>
-              <td><%= v.type %><%= v.subtype ? ` (${v.subtype})` : ''%></td>
-              <td><%= v.sign %></td>
-              <td style="color:<%= v.color %>">&#9632;</td>
-              <td><%= v.shortcut == '1' ? '✅' : '' %><%= v.morning == '1' ? '🌞' : '' %><%= v.evening == '1' ? '😴' : '' %></td>
-              <td><a href="/edit/variable/<%= v._id %>">Edit</a></td>
+              <th>Variable</th>
+              <th>Options</th>
+              <th>Edit</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Sign</th>
+              <th>Color</th>
             </tr>
-          <% }) %>
-        </table>
+            <% variables.forEach(function(v) { %>
+              <tr>
+                <td><%= v.variable %></td>
+                <td><%= v.shortcut == '1' ? '✅' : '' %><%= v.morning == '1' ? '🌞' : '' %><%= v.evening == '1' ? '😴' : '' %></td>
+                <td><a href="/edit/variable/<%= v._id %>">Edit</a></td>
+                <td><%= v.category %></td>
+                <td><%= v.type %><%= v.subtype ? ` (${v.subtype})` : ''%></td>
+                <td><%= v.sign %></td>
+                <td style="color:<%= v.color %>">&#9632;</td>
+              </tr>
+            <% }) %>
+          </table>
+        </div>
       </section>
       <hr>
       <section>
-        <table class="table table-sm table-striped">
-          <tr>
-            <th>Variable</th>
-            <th>Data</th>
-            <th>Last Updated</th>
-          </tr>
-          <% records.forEach(function(r) { %>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped">
             <tr>
-              <td><%= r.variable %></td>
-              <td><%= r.data %></td>
-              <td><%= r.moment %></td>
+              <th>Variable</th>
+              <th>Data</th>
+              <th>Last Updated</th>
             </tr>
-          <% }) %>
-        </table> 
+            <% records.forEach(function(r) { %>
+              <tr>
+                <td><%= r.variable %></td>
+                <td><%= r.data %></td>
+                <td><%= r.moment %></td>
+              </tr>
+            <% }) %>
+          </table> 
+        </div>
       </section>
       <hr>
       <%- include('./partials/_footer'); %>
