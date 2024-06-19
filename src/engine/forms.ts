@@ -2,12 +2,10 @@ import Datastore from "nedb";
 import moment from "moment";
 
 export function getAddData(categories: Datastore, variables: Datastore): any {
-    const now = moment();
     return {
         variables: variables.getAllData(),
         categories: buildCategoryList(categories),
-        today: now.format("YYYY-MM-DD"),
-        time: now.format("HH:mm")
+        ...getTimeData()
       };
 }
 
@@ -30,12 +28,9 @@ export function getDailyFormData(labels: Datastore, variables: Datastore): any {
     return {
         highLowLabels,
         morningVariables,
-        eveningVariables
+        eveningVariables,
+        ...getTimeData()
     };
-}
-
-export function getEditData() {
-
 }
 
 function buildCategoryList(categories: Datastore): any[] {
@@ -45,4 +40,12 @@ function buildCategoryList(categories: Datastore): any[] {
             name: category.name
         };
     });
+}
+
+function getTimeData() {
+    const now = moment();
+    return {
+        today: now.format("YYYY-MM-DD"),
+        time: now.format("HH:mm")
+    };
 }

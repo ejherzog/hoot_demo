@@ -109,8 +109,11 @@ app.post('/edit/record/:id', (req: Request, res: Response) => {
 });
 
 app.post('/daily', (req: Request, res: Response) => {
+    const timestamp = moment(req.body.date + ' ' + req.body.time).valueOf();
+    delete req.body.date;
+    delete req.body.time;
     for (const [key, value] of Object.entries(req.body)) {
-        records.insert({ variable: key, data: value });
+        records.insert({ variable: key, data: value, timestamp });
     }
     res.redirect('/all');
 });

@@ -25,9 +25,6 @@
             <input type="radio" id="data" name="data" value="0">
             <label for="data">No</label>
           </div>
-          <p>
-            <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#booleanTimestamp" aria-expanded="false" aria-controls="booleanTimestamp">Edit Timestamp</button>
-          </p>
           <div class="collapse" id="booleanTimestamp">
             <div class="form-group">
               <label for="date">Date</label>
@@ -38,7 +35,8 @@
               <input type="time" name="time" id="time" value="<%= time %>" />
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Record Boolean</button>
+          <button type="submit" class="btn btn-success">Record Boolean</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#booleanTimestamp" aria-expanded="false" aria-controls="booleanTimestamp">Edit Timestamp</button>
         </form>
       </section>
       <hr>
@@ -60,9 +58,6 @@
             <label for="data">Number:</label>
             <input type="number" id="data" name="data" min="0" step="0.1">
           </div>
-          <p>
-            <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#scalarTimestamp" aria-expanded="false" aria-controls="scalarTimestamp">Edit Timestamp</button>
-          </p>
           <div class="collapse" id="scalarTimestamp">
             <div class="form-group">
               <label for="date">Date</label>
@@ -73,7 +68,8 @@
               <input type="time" name="time" id="time" value="<%= time %>" />
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Record Scalar</button>
+          <button type="submit" class="btn btn-success">Record Scalar</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#scalarTimestamp" aria-expanded="false" aria-controls="scalarTimestamp">Edit Timestamp</button>
         </form>
       </section>
       <hr>
