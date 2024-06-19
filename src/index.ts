@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import moment from "moment";
 import { generateChartData } from "./engine/chart";
 import { getAllData, getIndexData, getShortcutData } from "./engine/data";
-import { getAddData, getRetroFormData, getDailyFormData } from "./engine/forms";
+import { getAddData, getDailyFormData } from "./engine/forms";
 import { getCategoryToEdit, getRecordToEdit, getVariableToEdit } from "./engine/edit";
 
 const app: Express = express();
@@ -30,10 +30,6 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/add', (req: Request, res: Response) => {
     res.render('add', getAddData(categories, variables));
-});
-
-app.get('/retro', (req: Request, res: Response) => {
-    res.render('retro', getRetroFormData(categories, variables));
 });
 
 app.get('/shortcuts', (req: Request, res: Response) => {
@@ -79,11 +75,6 @@ app.post('/add/variable', (req: Request, res: Response) => {
 });
 
 app.post('/add', (req: Request, res: Response) => {
-    records.insert(req.body);
-    res.redirect('/all');
-});
-
-app.post('/retro', (req: Request, res: Response) => {
     records.insert({
         variable: req.body.variable,
         data: req.body.data,

@@ -1,18 +1,13 @@
 import Datastore from "nedb";
 import moment from "moment";
 
-export function getRetroFormData(categories: Datastore, variables: Datastore) {
-    return {
-        variables:  variables.getAllData(),
-        categories: buildCategoryList(categories),
-        today: moment().format("YYYY-MM-DD")
-      }
-}
-
 export function getAddData(categories: Datastore, variables: Datastore): any {
+    const now = moment();
     return {
         variables: variables.getAllData(),
-        categories: buildCategoryList(categories)
+        categories: buildCategoryList(categories),
+        today: now.format("YYYY-MM-DD"),
+        time: now.format("HH:mm")
       };
 }
 

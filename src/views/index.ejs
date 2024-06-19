@@ -53,25 +53,6 @@
         </div>
       </section>
       <hr>
-      <section>
-        <div class="table-responsive">
-          <table class="table table-sm table-striped">
-            <tr>
-              <th>Variable</th>
-              <th>Data</th>
-              <th>Last Updated</th>
-            </tr>
-            <% records.forEach(function(r) { %>
-              <tr>
-                <td><%= r.variable %></td>
-                <td><%= r.data %></td>
-                <td><%= r.moment %></td>
-              </tr>
-            <% }) %>
-          </table> 
-        </div>
-      </section>
-      <hr>
       <%- include('./partials/_footer'); %>
     </div>
   </body>
