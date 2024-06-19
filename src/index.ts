@@ -75,11 +75,15 @@ app.post('/add/variable', (req: Request, res: Response) => {
 });
 
 app.post('/add', (req: Request, res: Response) => {
-    records.insert({
-        variable: req.body.variable,
-        data: req.body.data,
-        timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
-    });
+    if (req.body.date && req.body.time) {
+        records.insert({
+            variable: req.body.variable,
+            data: req.body.data,
+            timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
+        });
+    } else {
+        records.insert(req.body);
+    }
     res.redirect('/all');
 });
 
