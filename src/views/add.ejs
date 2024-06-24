@@ -2,6 +2,67 @@
 <html>
     <%- include('./partials/_head'); %>
   <body>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+    <script>
+        function addRow() {
+          const formRows = document.getElementById('formRows');
+          const newNumber = (formRows.children.length + 1);
+
+          const newRow = document.createElement('div');
+          newRow.className = 'row form-group';
+
+          const deleteCol = document.createElement('div');
+          deleteCol.className = 'col-md-1';
+          const deleteButton = document.createElement('button');
+          deleteButton.type = 'button';
+          deleteButton.textContent = '-';
+          deleteButton.classList = 'btn btn-danger';
+          deleteButton.onclick = function(event) {
+            event.target.parentNode.parentNode.remove();
+          };
+          deleteCol.appendChild(deleteButton);
+          newRow.appendChild(deleteCol);
+
+          const dayId = 'day' + newNumber;
+          const dayCol = document.createElement('div');
+          dayCol.className = 'col-md-3';
+          dayCol.id = 'col' + dayId;
+          const dayLabel = document.createElement('label');
+          dayLabel.htmlFor = dayId;
+          dayLabel.textContent = 'Day:';
+          dayCol.appendChild(dayLabel);
+          newRow.appendChild(dayCol);
+
+          const dayInput = document.createElement('input');
+          dayInput.type = 'date';
+          dayInput.id = dayId;
+          dayInput.name = dayId;
+          dayInput.value = moment(document.getElementById("day1").value).subtract((formRows.children.length), 'days').format("YYYY-MM-DD");
+          dayCol.appendChild(dayInput);
+
+          const dataId = 'data' + newNumber;
+          const dataCol = document.createElement('div');
+          dataCol.className = 'col';
+          dataCol.id = 'col' + dataId;
+          const dataLabel = document.createElement('label');
+          dataLabel.htmlFor = dataId;
+          dataLabel.textContent = 'Data:'
+          dataCol.appendChild(dataLabel);
+
+          const dataInput = document.createElement('input');
+          dataInput.type = 'number';
+          dataInput.id = dataId;
+          dataInput.name = dataId;
+          dataInput.min = 0;
+          dataInput.step = 0.1;
+          dataCol.appendChild(dataInput);
+          newRow.appendChild(dataCol);
+
+          newRow.appendChild(document.createElement('br'));
+  
+          formRows.appendChild(newRow);
+        }
+    </script>
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
       <hr>
@@ -136,6 +197,39 @@
           <button type="submit" class="btn btn-primary">Add Category</button>
         </form>
       </section>
+      <hr>
+      <section class="w-75">
+        <h4>Add Historical Data</h4>
+      <form id="historyForm" action="/add/history" method="POST">
+        <div class="form-group">
+            <label for="variable">Variable:</label>
+            <select class="form-select" name="variable" id="variable" required>
+                <option selected disabled value="">--- Select One ---</option>
+                <% variables.forEach(function(s) { %>
+                    <option value="<%= s.variable %>"><%= s.variable %></option>
+                <% }) %>
+            </select>
+          </div>
+        <div id="formRows">
+            <div class="row form-group">
+                <div class="col-md-1">
+                <button class="btn btn-danger">-</button>
+                </div>
+                <div class="col-md-3">
+                <label for="day1">Day</label>
+                <input type="date" name="day1" id="day1" value="<%= today %>"/>
+                </div>
+                <div class="col">
+                <label for="data1">Data:</label>
+                <input type="number" id="data1" name="data1" min="0" step="0.1">
+                </div>
+            </div>
+          </div>
+        <button type="button" class="btn btn-success m-2" onClick="addRow()">+</button>
+        <br>
+        <button type="submit" class="btn btn-primary m-2">Submit</button>
+      </form>
+    </section>
       <%- include('./partials/_footer'); %>
     </div>
   </body>

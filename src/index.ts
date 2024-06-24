@@ -87,6 +87,22 @@ app.post('/add', (req: Request, res: Response) => {
     res.redirect('/all');
 });
 
+app.post('/add/history', (req: Request, res: Response) => {
+    const variable = req.body.variable;
+    delete req.body.variable;
+
+    var currentDate: String = new String();
+    for (const [key, value] of Object.entries(req.body)) {
+        if (key.startsWith('day')) {
+            currentDate = new String(value);
+        } else {
+            const datetime = moment(currentDate.valueOf()).add(12, 'hours').valueOf();
+            records.insert({ variable: variable, data: value, timestamp: datetime });
+        }
+    }
+    res.redirect('/all');
+});
+
 app.post('/edit/variable/:id', (req: Request, res: Response) => {
     variables.update({ _id: req.params.id }, req.body);
     res.redirect('/');

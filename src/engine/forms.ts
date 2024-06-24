@@ -3,7 +3,7 @@ import moment from "moment";
 
 export function getAddData(categories: Datastore, variables: Datastore): any {
     return {
-        variables: variables.getAllData(),
+        variables: variables.getAllData().sort((a, b) => a.variable.localeCompare(b.variable)),
         categories: buildCategoryList(categories),
         ...getTimeData()
       };
