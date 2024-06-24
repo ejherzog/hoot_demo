@@ -4,6 +4,10 @@
   <body>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
     <script>
+        function deleteRow(event) {
+          event.target.parentNode.parentNode.remove();
+        }
+
         function addRow() {
           const formRows = document.getElementById('formRows');
           const newNumber = (formRows.children.length + 1);
@@ -18,7 +22,7 @@
           deleteButton.textContent = '-';
           deleteButton.classList = 'btn btn-danger';
           deleteButton.onclick = function(event) {
-            event.target.parentNode.parentNode.remove();
+            deleteRow(event);
           };
           deleteCol.appendChild(deleteButton);
           newRow.appendChild(deleteCol);
@@ -213,7 +217,7 @@
         <div id="formRows">
             <div class="row form-group">
                 <div class="col-md-1">
-                <button class="btn btn-danger">-</button>
+                <button class="btn btn-danger" onClick="deleteRow(event)">-</button>
                 </div>
                 <div class="col-md-3">
                 <label for="day1">Day</label>
