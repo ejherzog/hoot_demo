@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/_head'); %>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <body>
+    <%- include('./partials/_nav'); %>
+    <div class="container mt-2">
+      <section>
+        <div id="chart"></div>
+
+        <script>
+            var options = {
+                series: <%- JSON.stringify(seriesData) %>,
+                chart: {
+                    type: 'heatmap'
+                },
+                tooltip: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        filter: 'none'
+                    }
+                },
+                plotOptions: {
+                    heatmap: {
+                        radius: 1
+                    }
+                },
+                xaxis: {
+                    tickAmount: <%- axisCount %>,
+                    categories: <%- JSON.stringify(xAxisDates) %>
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                colors: <%- JSON.stringify(colorData) %>,
+                stroke: {
+                    width: 1
+                },
+                title: {
+                    text: 'HeatMap Chart with Colorssssssss'
+                }
+            };
+    
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+          
+        </script>
+      </section>
+      <%- include('./partials/_footer'); %>
+    </div>
+  </body>
+</html>

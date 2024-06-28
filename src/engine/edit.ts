@@ -50,7 +50,7 @@ export function getVariableToEdit(categories: Datastore, variables: Datastore, v
 
 export function getRecordToEdit(variables: Datastore, records: Datastore, record_id: string): any {
     const record_to_edit = records.getAllData().find(record => record._id == record_id);
-    const variable_data = variables.getAllData().find(variable => variable.variable == record_to_edit.variable);
+    const variable_data = variables.getAllData().filter(variable => !variable.deleted).find(variable => variable.variable == record_to_edit.variable);
 
     return {
         type: variable_data.type,

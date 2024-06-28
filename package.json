@@ -12,11 +12,9 @@
   "author": "ejherzog",
   "license": "ISC",
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.32.0",
+    "@dotenvx/dotenvx": "^0.45.0",
     "@ngrok/ngrok": "^1.2.0",
     "body-parser": "^1.20.2",
-    "chart.js": "^4.4.2",
-    "chartjs-adapter-moment": "^1.0.1",
     "ejs": "^3.1.9",
     "express": "^4.19.2",
     "moment": "^2.30.1",

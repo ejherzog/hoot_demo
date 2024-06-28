@@ -1,7 +1,7 @@
 import moment from "moment";
 import Datastore from "nedb";
 import { Point } from "./classes";
-import { timeToUse, timestamp } from "./utils";
+import { dayRecorded, timeToUse, timestamp } from "./utils";
 
 export function generateChartData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
@@ -220,8 +220,4 @@ function generateTemperatureData(records: any[], color: string): any[] {
 
 function timeRecorded(record: any): number {
     return moment(timeToUse(record)).valueOf();
-}
-
-function dayRecorded(record: any): number {;
-    return moment(timeToUse(record)).startOf('day').valueOf();
 }
