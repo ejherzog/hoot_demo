@@ -14,21 +14,31 @@ export function getDailyFormData(labels: Datastore, variables: Datastore): any {
     const highLowLabels = labels.getAllData().find(label => label.type == 'high_low').labels;
     const morningVariables: any[] = [];
     const eveningVariables: any[] = [];
+    const weatherVariables: any[] = [];
     variables.getAllData()
-        .filter(v => v.subtype)
-        .sort((a, b) => a.subtype.localeCompare(b.subtype))
+        .filter(v => v.morning == '1' || v.evening == '1' || v.category == '9SiYxHoM0eo5sZhM')
         .forEach(variable => {
+            const type = variable.type == 'boolean' ? 'yesno' : variable.subtype;
             if (variable.morning == "1") {
-                morningVariables.push({ name: variable.variable, type: variable.subtype });
+                morningVariables.push({ name: variable.variable, type });
             }
             if (variable.evening == "1") {
-                eveningVariables.push({ name: variable.variable, type: variable.subtype });
+                eveningVariables.push({ name: variable.variable, type });
+            }
+            if (variable.category == '9SiYxHoM0eo5sZhM') {
+                weatherVariables.push({ name: variable.variable, type });
             }
         });
+    
+    morningVariables.sort((a, b) => a.type.localeCompare(b.type));
+    eveningVariables.sort((a, b) => a.type.localeCompare(b.type));
+    weatherVariables.sort((a, b) => a.name.localeCompare(b.name));
+
     return {
         highLowLabels,
         morningVariables,
         eveningVariables,
+        weatherVariables,
         ...getTimeData()
     };
 }
