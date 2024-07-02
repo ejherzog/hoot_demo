@@ -7,7 +7,7 @@ import { generateChartData } from "./engine/chart";
 import { getAllData, getIndexData, getShortcutData } from "./engine/data";
 import { getAddData, getDailyFormData } from "./engine/forms";
 import { getCategoryToEdit, getRecordToEdit, getVariableToEdit } from "./engine/edit";
-import { generateScalarHeatmapData } from "./engine/heatmap";
+import { generateHeatmapData } from "./engine/heatmap";
 
 const app: Express = express();
 
@@ -43,7 +43,7 @@ app.get('/daily', (req: Request, res: Response) => {
 });
 
 app.get('/heatmap', (req: Request, res: Response) => {
-    res.render('heatmap', generateScalarHeatmapData(categories, variables, records));
+    res.render('heatmap', generateHeatmapData(categories, variables, records));
 });
 
 app.get('/charts', (req: Request, res: Response) => {

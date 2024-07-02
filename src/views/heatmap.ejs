@@ -6,11 +6,11 @@
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
       <section>
-        <div id="chart"></div>
+        <div id="scalarHeat"></div>
 
         <script>
             var options = {
-                series: <%- JSON.stringify(seriesData) %>,
+                series: <%- JSON.stringify(scalarData) %>,
                 chart: {
                     type: 'heatmap'
                 },
@@ -24,27 +24,71 @@
                 },
                 plotOptions: {
                     heatmap: {
-                        radius: 1
+                        radius: 3
                     }
                 },
                 xaxis: {
-                    tickAmount: <%- axisCount %>,
+                    tickAmount: <%- xAxisCount %>,
                     categories: <%- JSON.stringify(xAxisDates) %>
                 },
                 dataLabels: {
                     enabled: false
                 },
-                colors: <%- JSON.stringify(colorData) %>,
+                colors: <%- JSON.stringify(scalarColorData) %>,
                 stroke: {
-                    width: 1
+                    width: 0
                 },
                 title: {
-                    text: 'HeatMap Chart with Colorssssssss'
+                    text: 'Scalar Variables'
                 }
             };
     
-            var chart = new ApexCharts(document.querySelector("#chart"), options);
-            chart.render();
+            var scalarChart = new ApexCharts(document.querySelector("#scalarHeat"), options);
+            scalarChart.render();
+          
+        </script>
+      </section>
+      <section>
+        <div id="booleanHeat"></div>
+
+        <script>
+            var options = {
+                series: <%- JSON.stringify(booleanData) %>,
+                chart: {
+                    type: 'heatmap'
+                },
+                tooltip: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        filter: 'none'
+                    }
+                },
+                plotOptions: {
+                    heatmap: {
+                        distributed: true,
+                        radius: 3
+                    }
+                },
+                xaxis: {
+                    tickAmount: <%- xAxisCount %>,
+                    categories: <%- JSON.stringify(xAxisDates) %>
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                colors: <%- JSON.stringify(booleanColorData) %>,
+                stroke: {
+                    width: 0
+                },
+                title: {
+                    text: 'Boolean Variables'
+                }
+            };
+    
+            var booleanChart = new ApexCharts(document.querySelector("#booleanHeat"), options);
+            booleanChart.render();
           
         </script>
       </section>

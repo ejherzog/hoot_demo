@@ -3,10 +3,11 @@ import Datastore from "nedb";
 import { HeatPoint } from "./classes";
 import { dayRecordedString, timestamp } from "./utils";
 
-export function generateScalarHeatmapData(categories: Datastore, variables: Datastore, records: Datastore): any {
+export function generateHeatmapData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
     const twoMonthsAgo = moment().subtract(2, 'months').startOf('day');
     const recentRecords = records.getAllData().filter(record => timestamp(record) > twoMonthsAgo.valueOf());
+    const dates: string[] = generateDates(twoMonthsAgo);
 
     var categoryById = new Map<string, string>(); // category ID -> {_id, color}
     categories.getAllData()
@@ -15,13 +16,19 @@ export function generateScalarHeatmapData(categories: Datastore, variables: Data
         });
     categoryById.set('none', '#5294C4');
 
-    var colorMap: Map<string, string> = new Map();
-    var variableMap: Map<string, Map<string, number | null>> = new Map();
-    const dates = generateDates(twoMonthsAgo);
+    return { ...generateScalarHeatmapData(categoryById, variables, recentRecords, dates),
+        ...generateBooleanHeatmapData(categoryById, variables, recentRecords, dates),
+        xAxisDates: dates, xAxisCount: Math.floor(dates.length / 3) }
+}
+
+export function generateScalarHeatmapData(categoryById: Map<string, string>, variables: Datastore, recentRecords: any[], dates: string[]): any {
+
+    var variableMap: Map<string, Map<string, number | null>> = new Map(); // variable name => date => [data values]
+    var colorMap: Map<string, string> = new Map(); // variable name => hex color
 
     variables.getAllData()
         .filter(variable => {
-            return variable.type == 'scalar';
+            return !variable.deleted && variable.type == 'scalar';
         })
         .sort((a, b) => (a.category.localeCompare(b.category)))
         .forEach(variable => {
@@ -38,24 +45,62 @@ export function generateScalarHeatmapData(categories: Datastore, variables: Data
             dataMap.set(date, parseFloat(record.data));
         });
 
-    var colorData: string[] = [];
-    var seriesData: { name: string, data: HeatPoint[] }[] = [];
+    var scalarColorData: string[] = [];
+    var scalarData: { name: string, data: HeatPoint[] }[] = [];
 
     variableMap.forEach((dataMap, variable) => {
-        const dataArray: HeatPoint[] | undefined = interpolateHeatData(dataMap);
+        const dataArray: HeatPoint[] | undefined = interpolateScalarData(dataMap);
         if (dataArray) {
-            seriesData.push({ name: variable, data: dataArray });
-            colorData.push(colorMap.get(variable)!);
+            scalarData.push({ name: variable, data: dataArray });
+            scalarColorData.push(colorMap.get(variable)!);
         }
     });
 
-    return { seriesData, colorData, xAxisDates: dates, axisCount: Math.floor(dates.length / 3) };
+    return { scalarData, scalarColorData };
 }
 
-function generateBooleanHeatmapData() {
-    // TO DO increase 0 and 1 to 1 and 2, respectively
-    // This will distinguish between 0 and null,
-    // which are rendered the same when no negative values are present in the data
+function generateBooleanHeatmapData(categoryById: Map<string, string>, variables: Datastore, recentRecords: any[], dates: string[]): any {
+
+    var variableMap: Map<string, Map<string, number | null>> = new Map(); // variable name => date => [data values]
+    var colorMap: Map<string, string> = new Map(); // variable name => hex color
+
+    variables.getAllData()
+        .filter(variable => {
+            return !variable.deleted && variable.type == 'boolean';
+        })
+        .sort((a, b) => (a.category.localeCompare(b.category)))
+        .forEach(variable => {
+            const colorA = variable.color ? variable.color : categoryById.get(variable.variable)!;
+            const colorB = colorA ? colorA : '#5294C4';
+            colorMap.set(variable.variable, colorB);
+            variableMap.set(variable.variable, generateNullMap(dates));
+        });
+
+    recentRecords.filter(record => colorMap.has(record.variable))
+        .forEach(record => {
+            const date = dayRecordedString(record);
+            var dataMap = variableMap.get(record.variable)!;
+
+            var currentCount = dataMap.get(date);
+            if (currentCount) {
+                dataMap.set(date, currentCount + 1)
+            } else {
+                dataMap.set(date, 1);
+            }
+        });
+    
+    var booleanColorData: string[] = [];
+    var booleanData: { name: string, data: HeatPoint[] }[] = [];
+
+    variableMap.forEach((dataMap, variable) => {
+        const dataArray: HeatPoint[] | undefined = interpolateBooleanData(dataMap);
+        if (dataArray) {
+            booleanData.push({ name: variable, data: dataArray });
+            booleanColorData.push(colorMap.get(variable)!);
+        }
+    });
+
+    return { booleanData, booleanColorData }; 
 }
 
 function generateDates(startDate: Moment): string[] {
@@ -80,7 +125,7 @@ function generateNullMap(dates: string[]): Map<string, null> {
     return nullMap;
 }
 
-function interpolateHeatData(dataMap: Map<string, number | null>): HeatPoint[] | undefined {
+function interpolateScalarData(dataMap: Map<string, number | null>): HeatPoint[] | undefined {
 
     var max: number = Number.MIN_SAFE_INTEGER;
     var min: number = Number.MAX_SAFE_INTEGER;
@@ -110,4 +155,17 @@ function interpolateHeatData(dataMap: Map<string, number | null>): HeatPoint[] |
     }
 
     return datapoints;
+}
+
+function interpolateBooleanData(dataMap: Map<string, number | null>): HeatPoint[] | undefined {
+
+    var allNull = true;
+    var datapoints: HeatPoint[] = [];
+
+    dataMap.forEach((data, date) => {
+        if (data) allNull = false;
+        datapoints.push(new HeatPoint(date, data));
+    });
+
+    return allNull ? undefined : datapoints;
 }
