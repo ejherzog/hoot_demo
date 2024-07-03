@@ -120,7 +120,7 @@ app.post('/add/history', (req: Request, res: Response) => {
 
 app.post('/edit/variable/:id', (req: Request, res: Response) => {
     variables.update({ _id: req.params.id }, req.body);
-    res.redirect('/');
+    res.redirect('/all');
 });
 
 app.post('/edit/category/:id', (req: Request, res: Response) => {
@@ -130,7 +130,7 @@ app.post('/edit/category/:id', (req: Request, res: Response) => {
         // update color for all variables in this category
         variables.update({ category: req.params.id, shortcut: "0" }, { $set: { color: req.body.color }}, { multi: true });
     }
-    res.redirect('/');
+    res.redirect('/all');
 });
 
 app.post('/edit/record/:id', (req: Request, res: Response) => {
@@ -155,7 +155,7 @@ app.post('/daily', (req: Request, res: Response) => {
 
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
     variables.update({ _id: req.params.id }, { $set: { deleted: true }} );
-    res.redirect('/');
+    res.redirect('/all');
 });
 
 app.post('/delete/record/:id', (req: Request, res: Response) => {
