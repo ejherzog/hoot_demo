@@ -45,18 +45,18 @@ export function generateScalarHeatmapData(categoryById: Map<string, string>, var
             dataMap.set(date, parseFloat(record.data));
         });
 
-    var scalarColorData: string[] = [];
-    var scalarData: { name: string, data: HeatPoint[] }[] = [];
+    var scalarHeatColorData: string[] = [];
+    var scalarHeatData: { name: string, data: HeatPoint[] }[] = [];
 
     variableMap.forEach((dataMap, variable) => {
         const dataArray: HeatPoint[] | undefined = interpolateScalarData(dataMap);
         if (dataArray) {
-            scalarData.push({ name: variable, data: dataArray });
-            scalarColorData.push(colorMap.get(variable)!);
+            scalarHeatData.push({ name: variable, data: dataArray });
+            scalarHeatColorData.push(colorMap.get(variable)!);
         }
     });
 
-    return { scalarData, scalarColorData };
+    return { scalarHeatData, scalarHeatColorData };
 }
 
 function generateBooleanHeatmapData(categoryById: Map<string, string>, variables: Datastore, recentRecords: any[], dates: string[]): any {
@@ -89,18 +89,18 @@ function generateBooleanHeatmapData(categoryById: Map<string, string>, variables
             }
         });
     
-    var booleanColorData: string[] = [];
-    var booleanData: { name: string, data: HeatPoint[] }[] = [];
+    var booleanHeatColorData: string[] = [];
+    var booleanHeatData: { name: string, data: HeatPoint[] }[] = [];
 
     variableMap.forEach((dataMap, variable) => {
         const dataArray: HeatPoint[] | undefined = interpolateBooleanData(dataMap);
         if (dataArray) {
-            booleanData.push({ name: variable, data: dataArray });
-            booleanColorData.push(colorMap.get(variable)!);
+            booleanHeatData.push({ name: variable, data: dataArray });
+            booleanHeatColorData.push(colorMap.get(variable)!);
         }
     });
 
-    return { booleanData, booleanColorData }; 
+    return { booleanHeatData, booleanHeatColorData }; 
 }
 
 function generateDates(startDate: Moment): string[] {

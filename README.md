@@ -17,7 +17,7 @@ No license offered. This application is currently for private, personal developm
 
 #### What Does It Do?
 
-HOOT is a symptom- and habit-tracking web app that allows users to fully customize the variables they monitor.
+HOOT is a symptom- and habit-tracking web app that allows users to fully customize the variables they monitor. It is designed to run on a Raspberry Pi or similar device connected to the user's home internet ensuring that their data is their own.
 
 ###### Variables & Categories
 
@@ -64,9 +64,9 @@ Additionally, as a lifelong advocate for personal data privacy, I was constantly
 
 After years of trying various apps, I found there wasn't anything available with enough of the features I needed to overcome my data privacy concerns. Most apps were too focused on a specific set of health, like period tracking or gastrointestinal symptoms. Some allowed for customization of the variables a user wanted to track, but it was often limited. And finally, very few offered the ability to visualize the user's data, especially on a time scale that allowed for seeing trends over months or years.
 
-In 2020, I began working on a simple Electron app, called [HealthGraph](), that would allow me to fully customize variables I wanted to track and then graph the data. It was somewhat useful at the time, but the first version(s) ran only on my laptop and it was difficult to track things when I was away from home. (That wasn't a problem during pandemic lockdowns, but became more difficult in later years!)
+In 2020, I began working on a simple Electron app, called HealthGraph, that would allow me to fully customize variables I wanted to track and then graph the data. It was somewhat useful at the time, but the first version(s) ran only on my laptop and it was difficult to track things when I was away from home. (That wasn't a problem during pandemic lockdowns, but became more difficult in later years!)
 
-In 2022, I came across the [Cycles Journal](). While this journal is nominally focused on the female hormone cycle, only 3 of the 30 variables it suggests tracking are directly related to menstruation. In addition to the 30 suggested variables, which include things like headaches, sleep data, and positive habits, it also has 8 blank lines for tracking customized variables.
+In 2022, I came across the [Cycles Journal](https://cyclesjournal.com/). While this journal is nominally focused on the female hormone cycle, only 3 of the 30 variables it suggests tracking are directly related to menstruation. In addition to the 30 suggested variables, which include things like headaches, sleep data, and positive habits, it also has 8 blank lines for tracking customized variables.
 
 The journal has daily pages for reflections or comments, but my favorite feature is the pages with an empty bubble for each of the 38 variables across the 28 days of the lunar cycle. Filling in the bubbles with shading, symbols, or dots creates a heatmap-style overview of each month. This visual, along with the ability to flip through this section to compare month-to-month, provided with a simple, quick, and effective way to spot sublte trends in my health.
 

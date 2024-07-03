@@ -1,5 +1,4 @@
 import moment, { Moment } from "moment";
-import { HeatPoint, Point } from "./classes";
 
 export function timeToUse(record: any): string {
     return record.timestamp || record.createdAt;

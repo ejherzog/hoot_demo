@@ -3,8 +3,8 @@ import Datastore from "nedb";
 import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
-import { generateChartData } from "./engine/chart";
-import { getAllData, getIndexData, getShortcutData } from "./engine/data";
+import { generateChartData } from "./engine/bar_chart";
+import { getAllData, getShortcutData } from "./engine/data";
 import { getAddData, getDailyFormData } from "./engine/forms";
 import { getCategoryToEdit, getRecordToEdit, getVariableToEdit } from "./engine/edit";
 import { generateHeatmapData } from "./engine/heatmap";
@@ -22,19 +22,17 @@ const variables = new Datastore({ filename: 'variables.db', autoload: true });
 const records = new Datastore({ filename: 'records.db', timestampData: true, autoload: true });
 
 app.get('/', (req: Request, res: Response) => {
-    categories.loadDatabase();
-    variables.loadDatabase();
-    records.loadDatabase();
-
-    res.render('index', getIndexData(categories, variables, records));
+    res.render('index');
 });
 
-app.get('/add', (req: Request, res: Response) => {
-    res.render('add', getAddData(categories, variables));
+app.get('/add/:success?', (req: Request, res: Response) => {
+    var success = req.params.success;
+    categories.loadDatabase();
+    res.render('add', { ...getAddData(categories, variables), success });
 });
 
 app.get('/shortcuts', (req: Request, res: Response) => {
-    res.render('shortcuts', { shortcutData: getShortcutData(categories, variables)});
+    res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success: undefined });
 });
 
 app.get('/daily', (req: Request, res: Response) => {
@@ -50,11 +48,15 @@ app.get('/charts', (req: Request, res: Response) => {
     categories.loadDatabase();
     variables.loadDatabase();
     records.loadDatabase();
-    res.render('charts', generateChartData(categories, variables, records));
+    res.render('charts', { ...generateHeatmapData(categories, variables, records), ...generateChartData(categories, variables, records) });
 });
 
 app.get('/all', (req: Request, res: Response) => {
-    res.render('all', { records: getAllData(records.getAllData()) });
+    categories.loadDatabase();
+    variables.loadDatabase();
+    records.loadDatabase();
+
+    res.render('all', getAllData(categories, variables, records));
 });
 
 app.get('/edit/category/:id', (req: Request, res: Response) => {
@@ -71,12 +73,12 @@ app.get('/edit/record/:id', (req: Request, res: Response) => {
 
 app.post('/add/category', (req: Request, res: Response) => {
     categories.insert(req.body);
-    res.redirect('/add');
+    res.redirect(`/add/${req.body.name}`);
 });
 
 app.post('/add/variable', (req: Request, res: Response) => {
     variables.insert(req.body);
-    res.redirect('/add');
+    res.render('add', {...getAddData(categories, variables), success: req.body.variable })
 });
 
 app.post('/add', (req: Request, res: Response) => {
@@ -89,7 +91,15 @@ app.post('/add', (req: Request, res: Response) => {
     } else {
         records.insert(req.body);
     }
-    res.redirect('/all');
+
+    const from = req.get('Referer');
+    if (from?.endsWith('shortcuts')) {
+        res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success: req.body.variable })
+    } else if (from?.endsWith('add')) {
+        res.render('add', {...getAddData(categories, variables), success: req.body.variable })
+    } else {
+        res.redirect('/all');
+    }
 });
 
 app.post('/add/history', (req: Request, res: Response) => {

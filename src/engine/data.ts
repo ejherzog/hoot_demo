@@ -2,24 +2,24 @@ import moment from "moment";
 import Datastore from "nedb";
 import { timeToUse } from "./utils";
 
-/**
- * 
- * @param records All records in database
- * @returns All records, sorted in reverse time order, formatted for table view
- */
-export function getAllData(records: any[]): any[] {
-    const recordData = records
-        .sort((a, b) => b.updatedAt - a.updatedAt)
-        .map(record => {
-            return {
-                'variable': record['variable'],
-                'data': record['data'],
-                'moment': moment(timeToUse(record)).format("MMM Do h:mm A").toString(),
-                'id': record['_id']
-            }
-        });
-    return recordData;
-}
+// /**
+//  * 
+//  * @param records All records in database
+//  * @returns All records, sorted in reverse time order, formatted for table view
+//  */
+// export function getAllData(records: any[]): any[] {
+//     const recordData = records
+//         .sort((a, b) => b.updatedAt - a.updatedAt)
+//         .map(record => {
+//             return {
+//                 'variable': record['variable'],
+//                 'data': record['data'],
+//                 'moment': moment(timeToUse(record)).format("MMM Do h:mm A").toString(),
+//                 'id': record['_id']
+//             }
+//         });
+//     return recordData;
+// }
 
 /**
  * 
@@ -28,7 +28,7 @@ export function getAllData(records: any[]): any[] {
  * @param records Records Datastore
  * @returns Last 48 hours of records (time sorted); all categories and variables formatted for display
  */
-export function getIndexData(categories: Datastore, variables: Datastore, records: Datastore): any {
+export function getAllData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
     const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
 
@@ -55,7 +55,8 @@ export function getIndexData(categories: Datastore, variables: Datastore, record
             return {
                 'variable': record['variable'],
                 'data': record['data'],
-                'moment': moment(record['updatedAt']).format("MMM Do h:mm A").toString()
+                'moment': moment(timeToUse(record)).format("MMM Do h:mm A").toString(),
+                'id': record['_id']
             }
         });
 

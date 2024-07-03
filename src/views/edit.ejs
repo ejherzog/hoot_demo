@@ -53,14 +53,17 @@
                 <label for="color" class="form-label">Color</label>
                 <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= color %>">
               </div>
-              <div class="form-group">
-                <label for="shortcut" class="form-label">Shortcut?</label>
+              <% if (variable.type == "boolean") { %>
                 <div class="form-group">
-                    <input type="radio" id="shortcut" name="shortcut" value="1" <%= variable.shortcut == "1" ? 'checked' : ''%>>
-                    <label for="shortcut">Yes</label><br>
-                    <input type="radio" id="shortcut" name="shortcut" value="0" <%= variable.shortcut == "1" ? '' : 'checked'%>>
-                    <label for="shortcut">No</label>
-                </div>
+                  <label for="shortcut" class="form-label">Shortcut?</label>
+                  <div class="form-group">
+                      <input type="radio" id="shortcut" name="shortcut" value="1" <%= variable.shortcut == "1" ? 'checked' : ''%>>
+                      <label for="shortcut">Yes</label><br>
+                      <input type="radio" id="shortcut" name="shortcut" value="0" <%= variable.shortcut == "1" ? '' : 'checked'%>>
+                      <label for="shortcut">No</label>
+                  </div>
+                  </div>
+                <% } %>
               <div class="form-group">
                 <label for="daily" class="form-label">Daily Check In</label>
                 <div class="form-group">
@@ -69,7 +72,6 @@
                   <input type="checkbox" id="evening" name="evening" value="1" <%= variable.evening == "1" ? 'checked' : ''%>>
                   <label for="evening">Evening</label><br>
                 </div>
-              </div>
               </div>
               <button type="submit" class="btn btn-primary">Submit Edits</button>
             </form>

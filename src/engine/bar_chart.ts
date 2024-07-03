@@ -44,14 +44,12 @@ export function generateChartData(categories: Datastore, variables: Datastore, r
     var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, recentRecords);
     var scalarSets = generateScalarData(scalarColorMap, recentRecords);
     var booleanSets = generateStackedBooleanBarData(booleanCatMap, posNegMap, booleanColorMap, recentRecords);
-    var tempSets = generateTemperatureData(recentRecords, categoryById.get('t0ANSfmglzv6cU8s')!.color);
 
     return {
-        categoryData: categorySets,
-        highLowData: highLowSets,
-        scalarData: scalarSets,
-        booleanData: booleanSets,
-        tempData: tempSets
+        categoryBarData: categorySets,
+        highLowBarData: highLowSets,
+        scalarBarData: scalarSets,
+        booleanBarData: booleanSets
     };
 }
 
@@ -196,26 +194,6 @@ function generateScalarData(colorMap: Map<string, string>, records: any[]): any[
         });
     });
     return scalarSets;
-}
-
-function generateTemperatureData(records: any[], color: string): any[] {
-
-    var datapoints: Point[] = [];
-    records
-        .filter(record => record.variable == 'Temperature')
-        .forEach(record => {
-            const datapoint = new Point(timeRecorded(record), parseFloat(record.data));
-            datapoints.push(datapoint);
-        });
-    
-    datapoints.sort((a, b) => a.x - b.x);
-    return [{
-        backgroundColor: color,
-        label: 'Temperature',
-        data: datapoints,
-        pointRadius: 10,
-        pointStyle: 'rectRounded'
-    }];
 }
 
 function timeRecorded(record: any): number {

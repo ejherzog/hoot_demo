@@ -3,20 +3,121 @@
   <%- include('./partials/_head'); %>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <body>
     <%- include('./partials/_nav'); %>
     <div class="container mt-2">
       <div id="accordion">
         <div class="card">
+          <div class="card-header" id="heatmaps">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseHeat" aria-expanded="false" aria-controls="collapseHeat">
+                Heatmaps
+              </button>
+            </h5>
+          </div>
+          <div id="collapseHeat" class="collapse" aria-labelledby="heatmaps" data-parent="#accordion">
+            <div class="card-body">
+            <section>
+              <div id="scalarHeat"></div>
+      
+              <script>
+                  var options = {
+                      series: <%- JSON.stringify(scalarHeatData) %>,
+                      chart: {
+                          type: 'heatmap'
+                      },
+                      tooltip: {
+                          enabled: false
+                      },
+                      states: {
+                          hover: {
+                              filter: 'none'
+                          }
+                      },
+                      plotOptions: {
+                          heatmap: {
+                              radius: 3
+                          }
+                      },
+                      xaxis: {
+                          tickAmount: <%- xAxisCount %>,
+                          categories: <%- JSON.stringify(xAxisDates) %>
+                      },
+                      dataLabels: {
+                          enabled: false
+                      },
+                      colors: <%- JSON.stringify(scalarHeatColorData) %>,
+                      stroke: {
+                          width: 0
+                      },
+                      title: {
+                          text: 'Scalar Variables'
+                      }
+                  };
+          
+                  var scalarHeatChart = new ApexCharts(document.querySelector("#scalarHeat"), options);
+                  scalarHeatChart.render();
+                
+              </script>
+            </section>
+            <section>
+              <div id="booleanHeat"></div>
+      
+              <script>
+                  var options = {
+                      series: <%- JSON.stringify(booleanHeatData) %>,
+                      chart: {
+                          type: 'heatmap'
+                      },
+                      tooltip: {
+                          enabled: false
+                      },
+                      states: {
+                          hover: {
+                              filter: 'none'
+                          }
+                      },
+                      plotOptions: {
+                          heatmap: {
+                              distributed: true,
+                              radius: 3
+                          }
+                      },
+                      xaxis: {
+                          tickAmount: <%- xAxisCount %>,
+                          categories: <%- JSON.stringify(xAxisDates) %>
+                      },
+                      dataLabels: {
+                          enabled: false
+                      },
+                      colors: <%- JSON.stringify(booleanHeatColorData) %>,
+                      stroke: {
+                          width: 0
+                      },
+                      title: {
+                          text: 'Boolean Variables'
+                      }
+                  };
+          
+                  var booleanHeatChart = new ApexCharts(document.querySelector("#booleanHeat"), options);
+                  booleanHeatChart.render();
+                
+              </script>
+            </section>
+          </div>
+          </div>
+          </div>
+        <div class="card">
           <div class="card-header" id="byCategory">
             <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="true" aria-controls="collapseCategory">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="false" aria-controls="collapseCategory">
                 Charts by Category
               </button>
             </h5>
           </div>
-          <div id="collapseCategory" class="collapse show" aria-labelledby="byCategory" data-parent="#accordion">
+          <div id="collapseCategory" class="collapse" aria-labelledby="byCategory" data-parent="#accordion">
             <div class="card-body">
               <section>
                 <div><canvas id="categoryChart"></canvas></div>
@@ -44,7 +145,7 @@
                       }
                     },
                     data: {
-                      datasets: <%- JSON.stringify(categoryData) %>
+                      datasets: <%- JSON.stringify(categoryBarData) %>
                     }
                   });
                 </script>
@@ -64,9 +165,9 @@
               <section>
                 <div><canvas id="highLowChart"></canvas></div>
                 <hr>
-                <div><canvas id="booleanChart"></canvas></div>
+                <div><canvas id="booleanBarChart"></canvas></div>
                 <hr>
-                <div><canvas id="scalarChart"></canvas></div>
+                <div><canvas id="scalarBarChart"></canvas></div>
                 
                 <script type="text/javascript">
         
@@ -96,12 +197,12 @@
                       }
                     },
                     data: {
-                      datasets: <%- JSON.stringify(highLowData) %>
+                      datasets: <%- JSON.stringify(highLowBarData) %>
                     }
                   });
         
-                  const booleanCtx = document.getElementById("booleanChart").getContext("2d");
-                  const booleanChart = new Chart(booleanCtx, {
+                  const booleanCtx = document.getElementById("booleanBarChart").getContext("2d");
+                  const booleanBarChart = new Chart(booleanCtx, {
                     type: 'bar',
                     options: {
                       plugins: {
@@ -125,12 +226,12 @@
                       }
                     },
                     data: {
-                      datasets: <%- JSON.stringify(booleanData) %>
+                      datasets: <%- JSON.stringify(booleanBarData) %>
                     }
                   });
         
-                  const scalarCtx = document.getElementById("scalarChart").getContext("2d");
-                  const scalarChart = new Chart(scalarCtx, {
+                  const scalarCtx = document.getElementById("scalarBarChart").getContext("2d");
+                  const scalarBarChart = new Chart(scalarCtx, {
                     type: 'bar',
                     options: {
                       plugins: {
@@ -163,7 +264,7 @@
                       }
                     },
                     data: {
-                      datasets: <%- JSON.stringify(scalarData) %>
+                      datasets: <%- JSON.stringify(scalarBarData) %>
                     }
                   });
                 </script>
@@ -171,41 +272,7 @@
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header" id="temperature">
-            <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTemp" aria-expanded="false" aria-controls="collapseTemp">
-                Temperature Chart
-              </button>
-            </h5>
-          </div>
-          <div id="collapseTemp" class="collapse" aria-labelledby="temperature" data-parent="#accordion">
-            <div class="card-body">
-                <div><canvas id="tempChart"></canvas></div>
-                <script type="text/javascript">
-                  const tempCtx = document.getElementById("tempChart").getContext("2d");
-                  const tempChart = new Chart(tempCtx, {
-                    type: 'line',
-                    options: {
-                      scales: {
-                        x: {
-                          type: 'time',
-                          position: 'bottom'
-                        }
-                      }
-                    },
-                    data: {
-                      datasets: <%- JSON.stringify(tempData) %>
-                    }
-                  });
-                </script>
-            </div>
-          </div>
-        </div>
       </div>
-
-
-      
       <%- include('./partials/_footer'); %>
     </div>
   </body>
