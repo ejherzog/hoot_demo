@@ -1,7 +1,7 @@
 import moment from "moment";
 import Datastore from "nedb";
 import { Point } from "./classes";
-import { dayRecorded, timeToUse, timestamp } from "./utils";
+import { dayRecorded, timestamp } from "./utils";
 
 export function generateChartData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
@@ -194,8 +194,4 @@ function generateScalarData(colorMap: Map<string, string>, records: any[]): any[
         });
     });
     return scalarSets;
-}
-
-function timeRecorded(record: any): number {
-    return moment(timeToUse(record)).valueOf();
 }
