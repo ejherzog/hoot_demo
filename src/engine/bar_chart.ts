@@ -25,13 +25,15 @@ export function generateChartData(categories: Datastore, variables: Datastore, r
 
     variables.getAllData()
         .forEach(variable => {
-            categoryMap.set(variable.variable, variable.category || 'none');
+            if (categoryById.get(variable.category)!.name != 'Weather') {
+                categoryMap.set(variable.variable, variable.category || 'none');
+            }
             if (variable.subtype == 'high_low') {
-                highLowColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
+                highLowColorMap.set(variable.variable, colorToUse(variable, categoryById));
                 highLowCatMap.set(variable.variable, variable.category);
                 posNegMap.set(variable.variable, variable.sign == 'positive' ? true : false);
             } else if (variable.subtype == 'hours' || variable.subtype == 'number') {
-                scalarColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
+                scalarColorMap.set(variable.variable, colorToUse(variable, categoryById));
             } else if (variable.type == 'boolean') {
                 booleanColorMap.set(variable.variable, categoryById.get(variable.category)!.color);
                 booleanCatMap.set(variable.variable, variable.category);
@@ -57,7 +59,6 @@ function generateCategoryData(categoryMap: Map<string, string>, categoryById: Ma
 
     var recordsByDayMap: Map<string, Map<number, number>> = new Map();
     records
-        .filter(record => record.variable != 'Temperature')
         .forEach(record => {
             const category = categoryMap.get(record.variable);
             if (category) {
@@ -81,13 +82,13 @@ function generateCategoryData(categoryMap: Map<string, string>, categoryById: Ma
         .forEach((dayCountMap, category) => {
             var dayCountArray: Point[] = [];
             dayCountMap.forEach((count, date) => {
-                // const finalCount: number = posNegMap.get(variable) ? count : count * -1;
                 dayCountArray.push(new Point(date, count));
             });
             categoryDataSet.push({
                 backgroundColor: categoryById.get(category)!.color,
                 label: categoryById.get(category)!.name,
-                data: dayCountArray.sort((a, b) => a.x - b.x)
+                data: dayCountArray.sort((a, b) => a.x - b.x),
+                yAxisID: isLargeScale(dayCountArray, 10) ? 'yc' : 'y'
             });
         });
 
@@ -190,8 +191,19 @@ function generateScalarData(colorMap: Map<string, string>, records: any[]): any[
             backgroundColor: colorMap.get(variable),
             label: variable,
             data: data,
-            yAxisID: variable == 'Cycle Day' ? 'yc' : 'y'
+            yAxisID: isLargeScale(data, 25) ? 'yc' : 'y'
         });
     });
     return scalarSets;
+}
+
+function isLargeScale(data: Point[], breakpoint: number): boolean {
+    for (let p of data) {
+        if (p.y >= breakpoint) return true;
+    }
+    return false;
+}
+
+function colorToUse(variable: any, categoryById: Map<string, any>): string {
+    return variable.color || categoryById.get(variable.category)!.color;
 }

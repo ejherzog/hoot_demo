@@ -16,9 +16,12 @@ export function generateHeatmapData(categories: Datastore, variables: Datastore,
         });
     categoryById.set('none', '#5294C4');
 
-    return { ...generateScalarHeatmapData(categoryById, variables, recentRecords, dates),
-        ...generateBooleanHeatmapData(categoryById, variables, recentRecords, dates),
-        xAxisDates: dates, xAxisCount: Math.floor(dates.length / 3) }
+    const scalarData = generateScalarHeatmapData(categoryById, variables, recentRecords, dates);
+    const booleanData = generateBooleanHeatmapData(categoryById, variables, recentRecords, dates);
+    const heatmapData = scalarData.scalarHeatData.concat(booleanData.booleanHeatData);
+    const heatmapColors = scalarData.scalarHeatColorData.concat(booleanData.booleanHeatColorData);
+
+    return { heatmapData, heatmapColors, xAxisDates: dates, xAxisCount: Math.floor(dates.length / 3) }
 }
 
 export function generateScalarHeatmapData(categoryById: Map<string, string>, variables: Datastore, recentRecords: any[], dates: string[]): any {
@@ -68,7 +71,7 @@ function generateBooleanHeatmapData(categoryById: Map<string, string>, variables
         .filter(variable => {
             return !variable.deleted && variable.type == 'boolean';
         })
-        .sort((a, b) => (a.category.localeCompare(b.category)))
+        .sort((a, b) => (b.category.localeCompare(a.category)))
         .forEach(variable => {
             const colorA = variable.color ? variable.color : categoryById.get(variable.variable)!;
             const colorB = colorA ? colorA : '#5294C4';

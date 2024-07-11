@@ -12,68 +12,24 @@
         <div class="card">
           <div class="card-header" id="heatmaps">
             <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseHeat" aria-expanded="false" aria-controls="collapseHeat">
-                Heatmaps
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseHeat" aria-expanded="true" aria-controls="collapseHeat">
+                Heatmap
               </button>
             </h5>
           </div>
-          <div id="collapseHeat" class="collapse" aria-labelledby="heatmaps" data-parent="#accordion">
+          <div id="collapseHeat" class="collapse show" aria-labelledby="heatmaps" data-parent="#accordion">
             <div class="card-body">
             <section>
-              <div id="scalarHeat"></div>
-      
+              <div id="heatmap"></div>
               <script>
-                  var options = {
-                      series: <%- JSON.stringify(scalarHeatData) %>,
+                var options = {
+                      series: <%- JSON.stringify(heatmapData) %>,
                       chart: {
                           type: 'heatmap'
                       },
-                      tooltip: {
-                          enabled: false
-                      },
-                      states: {
-                          hover: {
-                              filter: 'none'
-                          }
-                      },
-                      plotOptions: {
-                          heatmap: {
-                              radius: 3
-                          }
-                      },
-                      xaxis: {
-                          tickAmount: <%- xAxisCount %>,
-                          categories: <%- JSON.stringify(xAxisDates) %>
-                      },
-                      dataLabels: {
-                          enabled: false
-                      },
-                      colors: <%- JSON.stringify(scalarHeatColorData) %>,
-                      stroke: {
-                          width: 0
-                      },
-                      title: {
-                          text: 'Scalar Variables'
-                      }
-                  };
-          
-                  var scalarHeatChart = new ApexCharts(document.querySelector("#scalarHeat"), options);
-                  scalarHeatChart.render();
-                
-              </script>
-            </section>
-            <section>
-              <div id="booleanHeat"></div>
-      
-              <script>
-                  var options = {
-                      series: <%- JSON.stringify(booleanHeatData) %>,
-                      chart: {
-                          type: 'heatmap'
-                      },
-                      tooltip: {
-                          enabled: false
-                      },
+                      // tooltip: {
+                      //     enabled: false
+                      // },
                       states: {
                           hover: {
                               filter: 'none'
@@ -92,18 +48,14 @@
                       dataLabels: {
                           enabled: false
                       },
-                      colors: <%- JSON.stringify(booleanHeatColorData) %>,
+                      colors: <%- JSON.stringify(heatmapColors) %>,
                       stroke: {
                           width: 0
-                      },
-                      title: {
-                          text: 'Boolean Variables'
                       }
                   };
-          
-                  var booleanHeatChart = new ApexCharts(document.querySelector("#booleanHeat"), options);
-                  booleanHeatChart.render();
-                
+
+                var heatmap = new ApexCharts(document.querySelector("#heatmap"), options);
+                heatmap.render();
               </script>
             </section>
           </div>
@@ -140,6 +92,19 @@
                           time: {
                             round: 'day',
                             unit: 'day'
+                          }
+                        },
+                        y: {
+                          type: 'linear',
+                          display: true,
+                          position: 'left'
+                        },
+                        yc: {
+                          type: 'linear',
+                          display: true,
+                          position: 'right',
+                          grid: {
+                            drawOnChartArea: false
                           }
                         }
                       }
