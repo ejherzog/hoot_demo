@@ -9,7 +9,7 @@ No license offered. This application is currently for private, personal developm
 
 -----
 
-[Live Demo](https://new-sterling-dodo.ngrok-free.app/)
+[Live Demo](https://hoot.ngrok.dev)
 
 > Note: You will see a warning from `ngrok` asking if you trust the developer of this application.
 
