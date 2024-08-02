@@ -1,25 +1,6 @@
 import moment from "moment";
 import Datastore from "nedb";
-import { timeToUse } from "./utils";
-
-// /**
-//  * 
-//  * @param records All records in database
-//  * @returns All records, sorted in reverse time order, formatted for table view
-//  */
-// export function getAllData(records: any[]): any[] {
-//     const recordData = records
-//         .sort((a, b) => b.updatedAt - a.updatedAt)
-//         .map(record => {
-//             return {
-//                 'variable': record['variable'],
-//                 'data': record['data'],
-//                 'moment': moment(timeToUse(record)).format("MMM Do h:mm A").toString(),
-//                 'id': record['_id']
-//             }
-//         });
-//     return recordData;
-// }
+import { timestamp, timeToUse } from "./utils";
 
 /**
  * 
@@ -28,7 +9,7 @@ import { timeToUse } from "./utils";
  * @param records Records Datastore
  * @returns Last 48 hours of records (time sorted); all categories and variables formatted for display
  */
-export function getAllData(categories: Datastore, variables: Datastore, records: Datastore): any {
+export function getAllData(categories: Datastore, variables: Datastore): any {
 
     const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
 
@@ -42,15 +23,20 @@ export function getAllData(categories: Datastore, variables: Datastore, records:
         .sort((a, b) => a.category.localeCompare(b.category))
         .map(v => {
             const variable = v;
-            variable.category = catMap.get(v.category);   
+            variable.category = catMap.get(v.category);
             return variable;
         });
 
-    const fortyEightHoursAgo = moment().subtract(48, 'hours').startOf('day').valueOf();
+    return {
+        variables: variableData,
+        categories: categoryData
+    };
+}
+
+export function getRecords(records: Datastore) {
 
     const recordData = records.getAllData()
-        .filter(r => r.updatedAt > fortyEightHoursAgo)
-        .sort((a, b) => b.updatedAt - a.updatedAt)
+        .sort((a, b) => timestamp(b) - timestamp(a))
         .map(record => {
             return {
                 'variable': record['variable'],
@@ -60,14 +46,10 @@ export function getAllData(categories: Datastore, variables: Datastore, records:
             }
         });
 
-    return {
-        records: recordData,
-        variables: variableData,
-        categories: categoryData
-      };
+    return { records: recordData };
 }
 
-export function getShortcutData(categories: Datastore, variables: Datastore): Map<string, { variable: string, color: string}[]> {
+export function getShortcutData(categories: Datastore, variables: Datastore): Map<string, { variable: string, color: string }[]> {
     const categoryData = categories.getAllData().sort((a, b) => a.group.localeCompare(b.group));
 
     const catMap = new Map<string, { name: string, color: string }>();
@@ -83,7 +65,7 @@ export function getShortcutData(categories: Datastore, variables: Datastore): Ma
         })
         .sort((a, b) => a.category.localeCompare(b.category));
 
-    const shortcutData: Map<string, { variable: string, color: string}[]> = new Map();
+    const shortcutData: Map<string, { variable: string, color: string }[]> = new Map();
     varData.forEach(v => {
         if (!shortcutData.has(v.category!)) {
             shortcutData.set(v.category!, []);

@@ -4,7 +4,7 @@ import path from "path";
 import bodyParser from "body-parser";
 import moment from "moment";
 import { generateChartData } from "./engine/bar_chart";
-import { getAllData, getShortcutData } from "./engine/data";
+import { getAllData as getCatVarData, getRecords, getShortcutData } from "./engine/data";
 import { getAddData, getDailyFormData } from "./engine/forms";
 import { getCategoryToEdit, getRecordToEdit, getVariableToEdit } from "./engine/edit";
 import { generateHeatmapData } from "./engine/heatmap";
@@ -51,12 +51,15 @@ app.get('/charts', (req: Request, res: Response) => {
     res.render('charts', { ...generateHeatmapData(categories, variables, records), ...generateChartData(categories, variables, records) });
 });
 
+app.get('/data', (req: Request, res: Response) => {
+    records.loadDatabase();
+    res.render('data', getRecords(records));
+});
+
 app.get('/all', (req: Request, res: Response) => {
     categories.loadDatabase();
     variables.loadDatabase();
-    records.loadDatabase();
-
-    res.render('all', getAllData(categories, variables, records));
+    res.render('all', getCatVarData(categories, variables));
 });
 
 app.get('/edit/category/:id', (req: Request, res: Response) => {
@@ -78,7 +81,7 @@ app.post('/add/category', (req: Request, res: Response) => {
 
 app.post('/add/variable', (req: Request, res: Response) => {
     variables.insert(req.body);
-    res.render('add', {...getAddData(categories, variables), success: req.body.variable })
+    res.render('add', { ...getAddData(categories, variables), success: req.body.variable })
 });
 
 app.post('/add', (req: Request, res: Response) => {
@@ -96,7 +99,7 @@ app.post('/add', (req: Request, res: Response) => {
     if (from?.endsWith('shortcuts')) {
         res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success: req.body.variable })
     } else if (from?.endsWith('add')) {
-        res.render('add', {...getAddData(categories, variables), success: req.body.variable })
+        res.render('add', { ...getAddData(categories, variables), success: req.body.variable })
     } else {
         res.redirect('/all');
     }
@@ -128,14 +131,14 @@ app.post('/edit/category/:id', (req: Request, res: Response) => {
     categories.update({ _id: req.params.id }, req.body);
     if (cat_to_update.color != req.body.color) {
         // update color for all variables in this category
-        variables.update({ category: req.params.id, shortcut: "0" }, { $set: { color: req.body.color }}, { multi: true });
+        variables.update({ category: req.params.id, shortcut: "0" }, { $set: { color: req.body.color } }, { multi: true });
     }
     res.redirect('/all');
 });
 
 app.post('/edit/record/:id', (req: Request, res: Response) => {
     records.update({ _id: req.params.id }, {
-        $set: { 
+        $set: {
             data: req.body.data,
             timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
         }
@@ -154,7 +157,7 @@ app.post('/daily', (req: Request, res: Response) => {
 });
 
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
-    variables.update({ _id: req.params.id }, { $set: { deleted: true }} );
+    variables.update({ _id: req.params.id }, { $set: { deleted: true } });
     res.redirect('/all');
 });
 

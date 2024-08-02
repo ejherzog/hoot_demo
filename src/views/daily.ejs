@@ -1,122 +1,153 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./partials/_head'); %>
+<%- include('./partials/_head'); %>
+
   <body>
     <%- include('./partials/_nav'); %>
-    <div class="container mt-2">
-      <section>
-        <h3>Morning Check In</h3>
-        <form action="/daily" method="POST">
-          <% morningVariables.forEach(variable => { %>
-            <div class="form-row form-group">
-              <% if (variable.type == "high_low") { %>
-                <div class="form-check form-check-inline col">
-                  <label class="form-check-label" for="<%= variable.name %>"><%= variable.name %>:</label>
-                </div>
-                <div class="form-group col">
-                <% highLowLabels.forEach(label => {%>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="<%= label.value %>" required>
-                    <label class="form-check-label" for="<%= label.value %>"><%= label.label %></label>
+      <div class="container mt-2 col-xl-9">
+        <section>
+          <h3>Morning Check In</h3>
+          <form action="/daily" method="POST">
+            <% morningVariables.forEach(variable=> { %>
+              <div class="form-row form-group">
+                <% if (variable.type=="high_low" ) { %>
+                  <div class="form-check form-check-inline col">
+                    <label class="form-check-label" for="<%= variable.name %>">
+                      <%= variable.name %>:
+                    </label>
                   </div>
-                <% }) %>
-                </div>
-              <% } else if (variable.type == "hours") { %>
-                <div class="form-group col">
-                  <label for="<%= variable.name %>"><%= variable.name %>:</label>
-                  <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
-                    <% for (let i = 0; i < 25; i++) { %>
-                        <option value="<%= i %>"><%= i %></option>
+                  <div class="form-group col">
+                    <% highLowLabels.forEach(label=> {%>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="<%= variable.name %>"
+                          name="<%= variable.name %>" value="<%= label.value %>" required>
+                        <label class="form-check-label" for="<%= label.value %>">
+                          <%= label.label %>
+                        </label>
+                      </div>
+                      <% }) %>
+                  </div>
+                  <% } else if (variable.type=="hours" ) { %>
+                    <div class="form-group col">
+                      <label for="<%= variable.name %>">
+                        <%= variable.name %>:
+                      </label>
+                      <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
+                        <% for (let i=0; i < 25; i++) { %>
+                          <option value="<%= i %>">
+                            <%= i %>
+                          </option>
+                          <% } %>
+                      </select>
+                    </div>
                     <% } %>
-                  </select>
-                </div>
-              <% } %>
-            </div>
-          <% }) %>
-          <div class="collapse" id="morningTimestamp">
-            <div class="form-group">
-              <label for="date">Date</label>
-              <input type="date" name="date" id="date" value="<%= today %>"/>
-            </div>
-            <div class="form-group">
-              <label for="time">Time</label>
-              <input type="time" name="time" id="time" value="<%= time %>" />
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <button type="submit" class="btn btn-success btn-sm m-1">Submit Morning</button>
-            <button class="btn btn-secondary btn-sm m-2" type="button" data-toggle="collapse" href="#morningTimestamp" aria-expanded="false" aria-controls="morningTimestamp">Edit Timestamp</button>
-          </div>
-        </form>
-      </section>
-      <hr>
-      <section>
-        <h3>Evening Check In</h3>
-        <form action="/daily" method="POST">
-          <% eveningVariables.forEach(variable => { %>
-            <div class="form-row form-group">
-              <% if (variable.type == "high_low") { %>
-                <div class="form-check form-check-inline col">
-                  <label class="form-check-label" for="<%= variable.name %>"><%= variable.name %>:</label>
-                </div>
-                <div class="col">
-                <% highLowLabels.forEach(label => {%>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="<%= label.value %>" required>
-                    <label class="form-check-label" for="<%= label.value %>"><%= label.label %></label>
+              </div>
+              <% }) %>
+                <div class="collapse" id="morningTimestamp">
+                  <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date" value="<%= today %>" />
                   </div>
-                <% }) %>
+                  <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="time" name="time" id="time" value="<%= time %>" />
+                  </div>
                 </div>
-              <% } else if (variable.type == "hours") { %>
-                <div class="form-group col">
-                  <label for="<%= variable.name %>"><%= variable.name %>:</label>
-                    <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
-                      <% for (let i = 0; i < 25; i++) { %>
-                          <option value="<%= i %>"><%= i %></option>
-                      <% } %>
-                    </select>
+                <div class="form-group form-row">
+                  <button type="submit" class="btn btn-success btn-sm m-1">Submit Morning</button>
+                  <button class="btn btn-secondary btn-sm m-2" type="button" data-toggle="collapse"
+                    href="#morningTimestamp" aria-expanded="false" aria-controls="morningTimestamp">Edit
+                    Timestamp</button>
                 </div>
-              <% } else if (variable.type == "yesno") { %>
-                <div class="form-check form-check-inline col">
-                  <label for="<%= variable.name %>"><%= variable.name %>:</label>
+          </form>
+        </section>
+        <hr>
+        <section>
+          <h3>Evening Check In</h3>
+          <form action="/daily" method="POST">
+            <% eveningVariables.forEach(variable=> { %>
+              <div class="form-row form-group">
+                <% if (variable.type=="high_low" ) { %>
+                  <div class="form-check form-check-inline col">
+                    <label class="form-check-label" for="<%= variable.name %>">
+                      <%= variable.name %>:
+                    </label>
                   </div>
                   <div class="col">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="1" required>
-                    <label class="form-check-label" for="1">Yes</label>
+                    <% highLowLabels.forEach(label=> {%>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="<%= variable.name %>"
+                          name="<%= variable.name %>" value="<%= label.value %>" required>
+                        <label class="form-check-label" for="<%= label.value %>">
+                          <%= label.label %>
+                        </label>
+                      </div>
+                      <% }) %>
                   </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="<%= variable.name %>" name="<%= variable.name %>" value="0" required>
-                    <label class="form-check-label" for="0">No</label>
+                  <% } else if (variable.type=="hours" ) { %>
+                    <div class="form-group col">
+                      <label for="<%= variable.name %>">
+                        <%= variable.name %>:
+                      </label>
+                      <select class="form-select" name="<%= variable.name %>" id="<%= variable.name %>" required>
+                        <% for (let i=0; i < 25; i++) { %>
+                          <option value="<%= i %>">
+                            <%= i %>
+                          </option>
+                          <% } %>
+                      </select>
+                    </div>
+                    <% } else if (variable.type=="yesno" ) { %>
+                      <div class="form-check form-check-inline col">
+                        <label for="<%= variable.name %>">
+                          <%= variable.name %>:
+                        </label>
+                      </div>
+                      <div class="col">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" id="<%= variable.name %>"
+                            name="<%= variable.name %>" value="1" required>
+                          <label class="form-check-label" for="1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" id="<%= variable.name %>"
+                            name="<%= variable.name %>" value="0" required>
+                          <label class="form-check-label" for="0">No</label>
+                        </div>
+                      </div>
+                      <% } else if (variable.type=="number" ) { %>
+                        <div class="form-check form-check-inline col">
+                          <label for="<%= variable.name %>">
+                            <%= variable.name %>
+                          </label>
+                        </div>
+                        <div class="col">
+                          <input type="number" id="<%= variable.name %>" name="<%= variable.name %>"
+                            class="form-select" />
+                        </div>
+                        <% } %>
+              </div>
+              <% }) %>
+                <div class="collapse" id="eveningTimestamp">
+                  <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date" value="<%= today %>" />
+                  </div>
+                  <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="time" name="time" id="time" value="<%= time %>" />
                   </div>
                 </div>
-              <% } else if (variable.type == "number") { %>
-                <div class="form-check form-check-inline col">
-                  <label for="<%= variable.name %>"><%= variable.name %></label>
-                  </div>
-                  <div class="col">
-                    <input type="number" id="<%= variable.name %>" name="<%= variable.name %>" class="form-select" />
+                <div class="form-group form-row">
+                  <button type="submit" class="btn btn-success btn-sm m-1">Submit Evening</button>
+                  <button class="btn btn-secondary btn-sm m-2" type="button" data-toggle="collapse"
+                    href="#eveningTimestamp" aria-expanded="false" aria-controls="eveningTimestamp">Edit
+                    Timestamp</button>
                 </div>
-              <% } %>
-            </div>
-          <% }) %>
-          <div class="collapse" id="eveningTimestamp">
-            <div class="form-group">
-              <label for="date">Date</label>
-              <input type="date" name="date" id="date" value="<%= today %>"/>
-            </div>
-            <div class="form-group">
-              <label for="time">Time</label>
-              <input type="time" name="time" id="time" value="<%= time %>" />
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <button type="submit" class="btn btn-success btn-sm m-1">Submit Evening</button>
-            <button class="btn btn-secondary btn-sm m-2" type="button" data-toggle="collapse" href="#eveningTimestamp" aria-expanded="false" aria-controls="eveningTimestamp">Edit Timestamp</button>
-          </div>
-        </form>
-      </section>
-      <%- include('./partials/_footer'); %>
-    </div>
+          </form>
+        </section>
+        <%- include('./partials/_footer'); %>
+      </div>
   </body>
+
 </html>

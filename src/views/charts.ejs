@@ -1,78 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./partials/_head'); %>
+<%- include('./partials/_head'); %>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
   <body>
     <%- include('./partials/_nav'); %>
-    <div class="container mt-2">
-      <div id="accordion">
-        <div class="card">
-          <div class="card-header" id="heatmaps">
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseHeat" aria-expanded="true" aria-controls="collapseHeat">
-                Heatmap
-              </button>
-            </h5>
-          </div>
-          <div id="collapseHeat" class="collapse show" aria-labelledby="heatmaps" data-parent="#accordion">
-            <div class="card-body">
-            <section>
-              <div id="heatmap"></div>
-              <script>
-                var options = {
+      <div class="container mt-2 col-xl-9">
+        <div id="accordion">
+          <div class="card">
+            <div class="card-header" id="heatmaps">
+              <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseHeat" aria-expanded="true"
+                  aria-controls="collapseHeat">
+                  Heatmap
+                </button>
+              </h5>
+            </div>
+            <div id="collapseHeat" class="collapse show" aria-labelledby="heatmaps" data-parent="#accordion">
+              <div class="card-body">
+                <section>
+                  <div id="heatmap"></div>
+                  <script>
+                    var options = {
                       series: <%- JSON.stringify(heatmapData) %>,
                       chart: {
-                          type: 'heatmap'
+                        type: 'heatmap'
                       },
-                      // tooltip: {
-                      //     enabled: false
-                      // },
                       states: {
-                          hover: {
-                              filter: 'none'
-                          }
+                        hover: {
+                          filter: 'none'
+                        }
                       },
                       plotOptions: {
-                          heatmap: {
-                              distributed: true,
-                              radius: 3
-                          }
+                        heatmap: {
+                          distributed: true,
+                          radius: 3
+                        }
                       },
                       xaxis: {
-                          tickAmount: <%- xAxisCount %>,
-                          categories: <%- JSON.stringify(xAxisDates) %>
+                        tickAmount: <%- xAxisCount %>,
+                        categories: <%- JSON.stringify(xAxisDates) %>
                       },
                       dataLabels: {
-                          enabled: false
+                        enabled: false
                       },
                       colors: <%- JSON.stringify(heatmapColors) %>,
                       stroke: {
-                          width: 0
+                        width: 0
                       }
-                  };
+                    };
 
-                var heatmap = new ApexCharts(document.querySelector("#heatmap"), options);
-                heatmap.render();
-              </script>
-            </section>
+                    var heatmap = new ApexCharts(document.querySelector("#heatmap"), options);
+                    heatmap.render();
+                  </script>
+                </section>
+              </div>
+            </div>
           </div>
-          </div>
-          </div>
-        <div class="card">
-          <div class="card-header" id="byCategory">
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="false" aria-controls="collapseCategory">
-                Charts by Category
-              </button>
-            </h5>
-          </div>
-          <div id="collapseCategory" class="collapse" aria-labelledby="byCategory" data-parent="#accordion">
-            <div class="card-body">
-              <section>
-                <div><canvas id="categoryChart"></canvas></div>
+          <div class="card">
+            <div class="card-header" id="byCategory">
+              <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCategory"
+                  aria-expanded="false" aria-controls="collapseCategory">
+                  Charts by Category
+                </button>
+              </h5>
+            </div>
+            <div id="collapseCategory" class="collapse" aria-labelledby="byCategory" data-parent="#accordion">
+              <div class="card-body">
+                <section>
+                  <div><canvas id="categoryChart"></canvas></div>
                 </section>
                 <script type="text/javascript">
                   const categoryCtx = document.getElementById("categoryChart").getContext("2d");
@@ -114,131 +114,133 @@
                     }
                   });
                 </script>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card">
-          <div class="card-header" id="byVariable">
-            <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseVariable" aria-expanded="false" aria-controls="collapseVariable">
-                Charts by Variable
-              </button>
-            </h5>
-          </div>
-          <div id="collapseVariable" class="collapse" aria-labelledby="byVariable" data-parent="#accordion">
-            <div class="card-body">
-              <section>
-                <div><canvas id="highLowChart"></canvas></div>
-                <hr>
-                <div><canvas id="booleanBarChart"></canvas></div>
-                <hr>
-                <div><canvas id="scalarBarChart"></canvas></div>
-                
-                <script type="text/javascript">
-        
-                  const highLowCtx = document.getElementById("highLowChart").getContext("2d");
-                  const highLowChart = new Chart(highLowCtx, {
-                    type: 'bar',
-                    options: {
-                      plugins: {
-                        legend: {
-                          position: 'right',
-                          align: 'start'
-                        }
-                      },
-                      scales: {
-                        x: {
-                          type: 'time',
-                          position: 'bottom',
-                          stacked: true,
-                          time: {
-                            round: 'day',
-                            unit: 'day'
+          <div class="card">
+            <div class="card-header" id="byVariable">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseVariable"
+                  aria-expanded="false" aria-controls="collapseVariable">
+                  Charts by Variable
+                </button>
+              </h5>
+            </div>
+            <div id="collapseVariable" class="collapse" aria-labelledby="byVariable" data-parent="#accordion">
+              <div class="card-body">
+                <section>
+                  <div><canvas id="highLowChart"></canvas></div>
+                  <hr>
+                  <div><canvas id="booleanBarChart"></canvas></div>
+                  <hr>
+                  <div><canvas id="scalarBarChart"></canvas></div>
+
+                  <script type="text/javascript">
+
+                    const highLowCtx = document.getElementById("highLowChart").getContext("2d");
+                    const highLowChart = new Chart(highLowCtx, {
+                      type: 'bar',
+                      options: {
+                        plugins: {
+                          legend: {
+                            position: 'right',
+                            align: 'start'
                           }
                         },
-                        y: {
-                          stacked: true
-                        }
-                      }
-                    },
-                    data: {
-                      datasets: <%- JSON.stringify(highLowBarData) %>
-                    }
-                  });
-        
-                  const booleanCtx = document.getElementById("booleanBarChart").getContext("2d");
-                  const booleanBarChart = new Chart(booleanCtx, {
-                    type: 'bar',
-                    options: {
-                      plugins: {
-                        legend: {
-                          position: 'right',
-                          align: 'start'
-                        }
-                      },
-                      scales: {
-                        x: {
-                          type: 'time',
-                          time: {
-                            unit: 'day'
+                        scales: {
+                          x: {
+                            type: 'time',
+                            position: 'bottom',
+                            stacked: true,
+                            time: {
+                              round: 'day',
+                              unit: 'day'
+                            }
                           },
-                          position: 'bottom',
-                          stacked: true
-                        },
-                        y: {
-                          stacked: true
-                        }
-                      }
-                    },
-                    data: {
-                      datasets: <%- JSON.stringify(booleanBarData) %>
-                    }
-                  });
-        
-                  const scalarCtx = document.getElementById("scalarBarChart").getContext("2d");
-                  const scalarBarChart = new Chart(scalarCtx, {
-                    type: 'bar',
-                    options: {
-                      plugins: {
-                        legend: {
-                          position: 'right'
+                          y: {
+                            stacked: true
+                          }
                         }
                       },
-                      scales: {
-                        x: {
-                          type: 'time',
-                          position: 'bottom',
-                          time: {
-                            round: 'day',
-                            unit: 'day'
+                      data: {
+                        datasets: <%- JSON.stringify(highLowBarData) %>
+                      }
+                    });
+
+                    const booleanCtx = document.getElementById("booleanBarChart").getContext("2d");
+                    const booleanBarChart = new Chart(booleanCtx, {
+                      type: 'bar',
+                      options: {
+                        plugins: {
+                          legend: {
+                            position: 'right',
+                            align: 'start'
                           }
                         },
-                        y: {
-                          type: 'linear',
-                          display: true,
-                          position: 'left'
-                        },
-                        yc: {
-                          type: 'linear',
-                          display: true,
-                          position: 'right',
-                          grid: {
-                            drawOnChartArea: false
+                        scales: {
+                          x: {
+                            type: 'time',
+                            time: {
+                              unit: 'day'
+                            },
+                            position: 'bottom',
+                            stacked: true
+                          },
+                          y: {
+                            stacked: true
                           }
                         }
-                      }
-                    },
-                    data: {
-                      datasets: <%- JSON.stringify(scalarBarData) %>
+                      },
+                      data: {
+                        datasets: <%- JSON.stringify(booleanBarData) %>
                     }
-                  });
-                </script>
-              </section>
+                    });
+
+                    const scalarCtx = document.getElementById("scalarBarChart").getContext("2d");
+                    const scalarBarChart = new Chart(scalarCtx, {
+                      type: 'bar',
+                      options: {
+                        plugins: {
+                          legend: {
+                            position: 'right'
+                          }
+                        },
+                        scales: {
+                          x: {
+                            type: 'time',
+                            position: 'bottom',
+                            time: {
+                              round: 'day',
+                              unit: 'day'
+                            }
+                          },
+                          y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left'
+                          },
+                          yc: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                              drawOnChartArea: false
+                            }
+                          }
+                        }
+                      },
+                      data: {
+                        datasets: <%- JSON.stringify(scalarBarData) %>
+                    }
+                    });
+                  </script>
+                </section>
+              </div>
             </div>
           </div>
         </div>
+        <%- include('./partials/_footer'); %>
       </div>
-      <%- include('./partials/_footer'); %>
-    </div>
   </body>
+
 </html>

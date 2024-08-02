@@ -1,80 +1,139 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./partials/_head'); %>
+<%- include('./partials/_head'); %>
+
   <body>
     <%- include('./partials/_nav'); %>
-    <div class="container mt-2">
-      <hr>
+      <div class="container mt-2 col-xl-9">
+        <hr>
         <h3 class="text-center">HOOT <i>(Demo Version)</i></h3>
         <h5 class="text-center">A Personal Health Tracker</h5>
         <hr>
-        <p>HOOT is a symptom- and habit-tracking web app that allows users to fully customize the variables they monitor.<br>It is designed to run on a Raspberry Pi or similar device connected to the user's home internet ensuring that their data is their own.</p>
+        <p>HOOT is a symptom- and habit-tracking web app. It allows users to customize the variables they monitor and to
+          display their data in meaningful graphs. It is designed to run on a Raspberry Pi or similar device connected
+          to the user's home internet ensuring that their data is their own.</p>
 
         <hr>
         <h4>What Does It Do?</h4>
-        <p class="ml-3">HOOT allows users to record and visualize data relevant to their personal experiences.</p>
-        <h5>Variables & Categories</h5>
-
-        <p class="ml-3">Users can create their own categories and define all the variables they want to track.<br>Variables can be:</p>
+        <p class="ml-3">HOOT allows users to record and visualize data relevant to their personal experiences. Users can
+          create their own categories and define all the variables they want to
+          track. Examples of variables a user might record:</p>
 
         <ul>
-        <li><b>boolean</b>: yes/no, ate or didn't eat, did or didn't do</li>
-        <ul>
-          <li>"<i>I drank coffee</i>"</li>
-          <li>"<i>I took a bath</i>"</li>
-          <li>"<i>I had diarrhea</i>"</li>
-          <li>"<i>I took my allergy meds</i>"</li>
+          <li><b>boolean</b>: yes/no, ate or didn't eat, did or didn't do</li>
+          <ul>
+            <li>"<i>I drank coffee</i>"</li>
+            <li>"<i>I took a bath</i>"</li>
+            <li>"<i>I had diarrhea</i>"</li>
+            <li>"<i>I took my allergy meds</i>"</li>
+          </ul>
+          <br>
+          <li><b>scalar</b>: intensity, hours, degree, daily count</li>
+          <ul>
+            <li>"<i>I got 7 hours of sleep</i>"</li>
+            <li>"<i>I drove for 3 hours today</i>"</li>
+            <li>"<i>The high temperature was 82℉</i>"</li>
+            <li>"<i>I had a horrible, intense headache</i>"</li>
+          </ul>
         </ul>
-        <br>
-        <li><b>scalar</b>: intensity, hours, degree, daily count</li>
-        <ul>
-          <li>"<i>I got 7 hours of sleep</i>"</li>
-          <li>"<i>I drove for 3 hours today</i>"</li>
-          <li>"<i>The high temperature was 82℉</i>"</li>
-          <li>"<i>I had a horrible, intense headache</i>"</li>
-        </ul>
-        </ul>
-        <p class="ml-3">Variables can be classified as positive or negative. For example, drinking water might be a positive habit whereas nail biting might be a negative habit. The positive/negative classification is used to make graphic visualizations of the data more meaningful.</p>
 
-        <p class="ml-3">When a data point is recorded, the current timestamp is automatically saved. Users can change the timestamp before or after recording the data point.</p>
+        <h5><i class="fa fa-fast-forward" aria-hidden="true"></i> Shortcuts</h5>
 
-        <p class="ml-3">Each category and variable can have a custom color associated. This color will be used when graphing the data.</p>
+        <p class="ml-3">Boolean variables can be set as shortcuts. The shortcuts tab is a collection of buttons - one
+          for each variable tagged as a shortcut. This is great for quickly recording frequent medications or commonly
+          consumed food and drink.</p>
 
-        <h5>Shortcuts</h5>
+        <h5><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Daily Forms</h5>
 
-        <p class="ml-3">Boolean variables can be set as shortcuts. The shortcuts tab is a collection of buttons - one for each variable tagged as a shortcut. This is great for quickly recording frequent medications or commonly consumed food and drink.</p>
+        <p class="ml-3">Variables can also be added to daily forms. There is one for morning and one for evening. For
+          example, the daily morning form could include sleep variables or basal body temperature (taken upon waking
+          up). For the evening, a user can reflect on there day: <i>How intense was my anxiety today?</i> or <i>How many
+            hours did I spend sitting at at desk?</i></p>
 
-        <h5>Daily Forms</h5>
+        <h5><i class="fa fa-bar-chart" aria-hidden="true"></i> Visualizations</h5>
 
-        <p class="ml-3">Variables can also be added to daily forms. There is one for morning and one for evening. For example, the daily morning form could include sleep variables or basal body temperature (taken upon waking up). For the evening, a user can reflect on there day: <i>How intense was my anxiety today?</i> or <i>How many hours did I spend sitting at at desk?</i></p>
+        <p class="ml-3">Bar charts and heatmaps are available in the Charts tab. The bar charts for individual variables
+          take into account whether each variable is positive or negative and graphs the data accordingly. There is also
+          a bar chart where the variables are aggregated into categories rather than being graphed individually; this
+          ignores positive/negative classifications.</p>
 
-        <h5>Visualizations</h5>
+        <p class="ml-3">The charts are currently split into charts for boolean variables and scalar variables. That
+          means there is a boolean heatmap, a scalar heatmap, a boolean bar chart, a scalar bar chart, and a category
+          bar chart. As of July 2024, I track 90 variables (yes, ninety!) so splitting the charts by type of variable
+          helps keeps the graphs from being too full of data to observe the information in a useful way.</p>
 
-        <p class="ml-3">Bar charts and heatmaps are available in the Charts tab. The bar charts for individual variables take into account whether each variable is positive or negative and graphs the data accordingly. There is also a bar chart where the variables are aggregated into categories rather than being graphed individually; this ignores positive/negative classifications.</p>
+        <h5><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Record, Variable, or Category</h5>
 
-        <p class="ml-3">The charts are currently split into charts for boolean variables and scalar variables. That means there is a boolean heatmap, a scalar heatmap, a boolean bar chart, a scalar bar chart, and a category bar chart. As of July 2024, I track 90 variables (yes, ninety!) so splitting the charts by type of variable helps keeps the graphs from being too full of data to observe the information in a useful way.</p>
+        <p class="ml-3">On the Add tab, users can record a new data point. They can also add new variables to track or
+          create new categories.</p>
+
+        <p class="ml-3">Variables can be classified as positive or negative. For example, drinking water might be a
+          positive habit whereas nail biting might be a negative habit. The positive/negative classification is used to
+          make graphic visualizations of the data more meaningful.</p>
+
+        <p class="ml-3">When a data point is recorded, the current timestamp is automatically saved. Users can change
+          the timestamp before or after recording the data point.</p>
+
+        <p class="ml-3">Each category and variable can have a custom color associated. This color will be used when
+          graphing the data.</p>
+
+        <h5><i class="fa fa-database" aria-hidden="true"></i> Data Records</h5>
+
+        <p class="ml-3">The Data section is a simple table, sorted in reverse order by record timestamp. Each record has
+          an Edit button in case an entry was recorded incorrectly. In the future,
+          this table will be searchable and sortable.</p>
+
+        <h5><i class="fa fa-list" aria-hidden="true"></i> Categories & Variables</h5>
+
+        <p class="ml-3">This page has a Categories table and a Variables table. From here, users can edit variables or categories.</p>
+
         <hr>
         <h4>Why Build This?</h4>
         <div class="ml-3">
-        <p>As a person who struggles with chronic health issues, I searched far and wide for a symptom-tracking app that could fully capture my daily experiences -- and could also present the data to myself and healthcare professionals in an effective way.</p>
+          <p>As a person who struggles with chronic health issues, I searched far and wide for a symptom-tracking app
+            that could fully capture my daily experiences -- and could also present the data to myself and healthcare
+            professionals in an effective way.</p>
 
-        <p>Additionally, as a lifelong advocate for personal data privacy, I was constantly weighing the benefits of a convenient symptom-tracking app with the drawbacks of having all my personal health data stored in the cloud by a private company.
+          <p>Additionally, as a lifelong advocate for personal data privacy, I was constantly weighing the benefits of a
+            convenient symptom-tracking app with the drawbacks of having all my personal health data stored in the cloud
+            by a private company.
 
-        <p>After years of trying various apps, I found there wasn't anything available with enough of the features I needed to overcome my data privacy concerns. Most apps were too focused on a specific set of health, like period tracking or gastrointestinal symptoms. Some allowed for customization of the variables a user wanted to track, but it was often limited. And finally, very few offered the ability to visualize the user's data, especially on a time scale that allowed for seeing trends over months or years.</p>
+          <p>After years of trying various apps, I found there wasn't anything available with enough of the features I
+            needed to overcome my data privacy concerns. Most apps were too focused on a specific set of health, like
+            period tracking or gastrointestinal symptoms. Some allowed for customization of the variables a user wanted
+            to track, but it was often limited. And finally, very few offered the ability to visualize the user's data,
+            especially on a time scale that allowed for seeing trends over months or years.</p>
 
-        <p>In 2020, I began working on a simple Electron app, called HealthGraph, that would allow me to fully customize variables I wanted to track and then graph the data. It was somewhat useful at the time, but the first version(s) ran only on my laptop and it was difficult to track things when I was away from home. (That wasn't a problem during pandemic lockdowns, but became more difficult in later years!)</p>
+          <p>In 2020, I began working on a simple Electron app, called HealthGraph, that would allow me to fully
+            customize variables I wanted to track and then graph the data. It was somewhat useful at the time, but the
+            first version(s) ran only on my laptop and it was difficult to track things when I was away from home. (That
+            wasn't a problem during pandemic lockdowns, but became more difficult in later years!)</p>
 
-        <p>In 2022, I came across the <a href="https://cyclesjournal.com/">Cycles Journal</a>. While this journal is nominally focused on the female hormone cycle, only 3 of the 30 variables it suggests tracking are directly related to menstruation. In addition to the 30 suggested variables, which include things like headaches, sleep data, and positive habits, it also has 8 blank lines for tracking customized variables.</p>
+          <p>In 2022, I came across the <a href="https://cyclesjournal.com/">Cycles Journal</a>. While this journal is
+            nominally focused on the female hormone cycle, only 3 of the 30 variables it suggests tracking are directly
+            related to menstruation. In addition to the 30 suggested variables, which include things like headaches,
+            sleep data, and positive habits, it also has 8 blank lines for tracking customized variables.</p>
 
-        <p>The journal has daily pages for reflections or comments, but my favorite feature is the pages with an empty bubble for each of the 38 variables across the 28 days of the lunar cycle. Filling in the bubbles with shading, symbols, or dots creates a heatmap-style overview of each month. This visual, along with the ability to flip through this section to compare month-to-month, provided with a simple, quick, and effective way to spot sublte trends in my health.</p>
+          <p>The journal has daily pages for reflections or comments, but my favorite feature is the pages with an empty
+            bubble for each of the 38 variables across the 28 days of the lunar cycle. Filling in the bubbles with
+            shading, symbols, or dots creates a heatmap-style overview of each month. This visual, along with the
+            ability to flip through this section to compare month-to-month, provided with a simple, quick, and effective
+            way to spot sublte trends in my health.</p>
 
-        <p>My second favorite feature is that my data is mine. It stays in this physical book and isn't controlled or accessible by any third parties. This eventually became a downside when I began spending more time away from home, especially when traveling by plane, because I didn't want to bring a large, heavy journal in my suitcase.</p>
+          <p>My second favorite feature is that my data is mine. It stays in this physical book and isn't controlled or
+            accessible by any third parties. This eventually became a downside when I began spending more time away from
+            home, especially when traveling by plane, because I didn't want to bring a large, heavy journal in my
+            suitcase.</p>
 
-        <p>Thus, in 2024, I returned to the idea of developing my own customizable health tracking app -- one that I could access from my phone while out and about, but that also wouldn't involve storing my data in the cloud.</p>
-  </div>
-  <hr>
-        <p class="text-center"><i>No license offered. This application is currently for private, personal development only.</i></p>
-      <%- include('./partials/_footer'); %>
-    </div>
+          <p>Thus, in 2024, I returned to the idea of developing my own customizable health tracking app -- one that I
+            could access from my phone while out and about, but that also wouldn't involve storing my data in the cloud.
+          </p>
+        </div>
+        <hr>
+        <p class="text-center"><i>No license offered. This application is currently for private, personal development
+            only.</i></p>
+        <%- include('./partials/_footer'); %>
+      </div>
   </body>
+
 </html>
