@@ -51,6 +51,14 @@ app.get('/charts', (req: Request, res: Response) => {
     res.render('charts', { ...generateHeatmapData(categories, variables, records), ...generateChartData(categories, variables, records) });
 });
 
+app.get('/data', (req: Request, res: Response) => {
+    categories.loadDatabase();
+    variables.loadDatabase();
+    records.loadDatabase();
+
+    res.render('data', getAllData(categories, variables, records));
+});
+
 app.get('/all', (req: Request, res: Response) => {
     categories.loadDatabase();
     variables.loadDatabase();

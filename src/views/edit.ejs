@@ -1,154 +1,178 @@
 <!DOCTYPE html>
 <html>
-  <%- include('./partials/_head'); %>
+<%- include('./partials/_head'); %>
+
   <body>
     <%- include('./partials/_nav'); %>
-    <div class="container mt-2">
-      <hr>
-      <% if (type == 'variable') { %>
-        <section class="w-50">
+      <div class="container mt-2">
+        <hr>
+        <% if (type=='variable' ) { %>
+          <section class="w-50">
             <form action="/edit/variable/<%= variable._id %>" method="POST">
               <div class="form-group">
                 <label for="variable">Variable Name:</label>
-                <input type="text" class="form-control" id="variable" name="variable" value="<%= variable.variable %>" required>
+                <input type="text" class="form-control" id="variable" name="variable" value="<%= variable.variable %>"
+                  required>
               </div>
               <div class="form-group">
                 <label for="type">Variable Type:</label>
                 <select name="type" id="type" required>
-                    <option disabled value="" <%- variable.type == undefined ? 'selected' : ''%>>--- Select One ---</option>
-                    <option value="boolean" <%- variable.type == "boolean" ? 'selected' : ''%>>Boolean (Yes or No)</option>
-                    <option value="scalar" <%- variable.type == "scalar" ? 'selected' : ''%>>Scalar (Rating/Intensity or Count)</option>
+                  <option disabled value="" <%- variable.type==undefined ? 'selected' : '' %>>--- Select One ---
+                  </option>
+                  <option value="boolean" <%- variable.type=="boolean" ? 'selected' : '' %>>Boolean (Yes or No)</option>
+                  <option value="scalar" <%- variable.type=="scalar" ? 'selected' : '' %>>Scalar (Rating/Intensity or
+                    Count)</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="subtype">Scalar Sub-Type:</label>
                 <select name="subtype" id="subtype">
-                    <option disabled value="" <%- variable.subtype == undefined ? 'selected' : ''%>>--- Select One ---</option>
-                    <option value="high_low" <%- variable.subtype == "high_low" ? 'selected' : ''%>>Rating/Intensity</option>
-                    <option value="hours" <%- variable.subtype == "hours" ? 'selected' : ''%>>Hours</option>
-                    <option value="number" <%- variable.subtype == "number" ? 'selected' : ''%>>Number or Count</option>
+                  <option disabled value="" <%- variable.subtype==undefined ? 'selected' : '' %>>--- Select One ---
+                  </option>
+                  <option value="high_low" <%- variable.subtype=="high_low" ? 'selected' : '' %>>Rating/Intensity
+                  </option>
+                  <option value="hours" <%- variable.subtype=="hours" ? 'selected' : '' %>>Hours</option>
+                  <option value="number" <%- variable.subtype=="number" ? 'selected' : '' %>>Number or Count</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="sign">Positive or Negative:</label>
                 <select name="sign" id="sign">
-                    <option disabled value="" <%- variable.sign == undefined ? 'selected' : ''%>>--- Select One ---</option>
-                    <option value="positive" <%- variable.sign == "positive" ? 'selected' : ''%>>Positive</option>
-                    <option value="negative" <%- variable.sign == "negative" ? 'selected' : ''%>>Negative</option>
+                  <option disabled value="" <%- variable.sign==undefined ? 'selected' : '' %>>--- Select One ---
+                  </option>
+                  <option value="positive" <%- variable.sign=="positive" ? 'selected' : '' %>>Positive</option>
+                  <option value="negative" <%- variable.sign=="negative" ? 'selected' : '' %>>Negative</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="category">Category:</label>
                 <select name="category" class="form-control" id="category" name="category" required>
                   <% categories.forEach(function(c) { %>
-                    <% if (variable.category == c.id) { %>
-                        <option value="<%= c.id %>" selected><%= c.name %></option>
-                    <% } else { %>
-                        <option value="<%= c.id %>"><%= c.name %></option>
-                    <% } %>
-                <% }) %>
+                    <% if (variable.category==c.id) { %>
+                      <option value="<%= c.id %>" selected>
+                        <%= c.name %>
+                      </option>
+                      <% } else { %>
+                        <option value="<%= c.id %>">
+                          <%= c.name %>
+                        </option>
+                        <% } %>
+                          <% }) %>
                 </select>
               </div>
               <div class="form-group w-25">
                 <label for="color" class="form-label">Color</label>
-                <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= color %>">
+                <input type="color" class="form-control form-control-color" id="color" name="color"
+                  value="<%= color %>">
               </div>
-              <% if (variable.type == "boolean") { %>
+              <% if (variable.type=="boolean" ) { %>
                 <div class="form-group">
                   <label for="shortcut" class="form-label">Shortcut?</label>
                   <div class="form-group">
-                      <input type="radio" id="shortcut" name="shortcut" value="1" <%= variable.shortcut == "1" ? 'checked' : ''%>>
-                      <label for="shortcut">Yes</label><br>
-                      <input type="radio" id="shortcut" name="shortcut" value="0" <%= variable.shortcut == "1" ? '' : 'checked'%>>
-                      <label for="shortcut">No</label>
+                    <input type="radio" id="shortcut" name="shortcut" value="1" <%=variable.shortcut=="1" ? 'checked'
+                      : '' %>>
+                    <label for="shortcut">Yes</label><br>
+                    <input type="radio" id="shortcut" name="shortcut" value="0" <%=variable.shortcut=="1" ? ''
+                      : 'checked' %>>
+                    <label for="shortcut">No</label>
                   </div>
-                  </div>
-                <% } %>
-              <div class="form-group">
-                <label for="daily" class="form-label">Daily Check In</label>
-                <div class="form-group">
-                  <input type="checkbox" id="morning" name="morning" value="1" <%= variable.morning == "1" ? 'checked' : ''%>>
-                  <label for="morning">Morning</label><br>
-                  <input type="checkbox" id="evening" name="evening" value="1" <%= variable.evening == "1" ? 'checked' : ''%>>
-                  <label for="evening">Evening</label><br>
                 </div>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit Edits</button>
+                <% } %>
+                  <div class="form-group">
+                    <label for="daily" class="form-label">Daily Check In</label>
+                    <div class="form-group">
+                      <input type="checkbox" id="morning" name="morning" value="1" <%=variable.morning=="1" ? 'checked'
+                        : '' %>>
+                      <label for="morning">Morning</label><br>
+                      <input type="checkbox" id="evening" name="evening" value="1" <%=variable.evening=="1" ? 'checked'
+                        : '' %>>
+                      <label for="evening">Evening</label><br>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit Edits</button>
             </form>
           </section>
           <hr>
           <form action="/delete/variable/<%= variable._id %>" method="POST">
-            <p>This variable will no longer appear in Shortcuts or Add, but historical data will be retained and displayed.</p>
+            <p>This variable will no longer appear in Shortcuts or Add, but historical data will be retained and
+              displayed.</p>
             <button type="submit" class="btn btn-danger"><b>Delete <%= variable.variable %></b></button>
           </form>
-      <% }  else if (type == 'category') { %>
-        <section class="w-50">
-          <form action="/edit/category/<%= category._id %>" method="POST">
-          <div class="form-group">
-            <label for="name">Category Name:</label>
-            <input type="text" class="form-control" id="name" name="name" value="<%= category.name %>" required>
-          </div>
-          <div class="form-group">
-            <label for="group">Group:</label>
-            <input type="text" class="form-control" id="group" name="group" value="<%= category.group %>" required>
-          </div>
-          <div class="form-group w-25">
-            <label for="color" class="form-label">Color</label>
-            <input type="color" class="form-control form-control-color" id="color" name="color" value="<%= category.color %>">
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Edits</button>
-        </form>
-        </section>
-      <% } else if (type == 'boolean') { %>
-        <section class="w-50">
-          <h4>Edit Record: <i><%= record.variable %></i></h4>
-        <form action="/edit/record/<%= record._id %>" method="POST">
-          <div class="form-group">
-            <input type="radio" id="data" name="data" value="1" <%- record.data == "1" ? 'checked' : ''%>>
-            <label for="data">Yes</label><br>
-            <input type="radio" id="data" name="data" value="0" <%- record.data == "0" ? 'checked' : ''%>>
-            <label for="data">No</label>
-          </div>
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input type="date" name="date" id="date" value="<%= record_date %>"/>
-          </div>
-          <div class="form-group">
-            <label for="time">Time</label>
-            <input type="time" name="time" id="time" value="<%= record_time %>" />
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Update</button>
-        </form>
-        </section>
-        <hr>
-        <form action="/delete/record/<%= record._id %>" method="POST">
-          <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
-        </form>
-      <% } else if (type == 'scalar') { %>
-        <section class="w-50">
-          <h4>Edit Record: <i><%= record.variable %></i></h4>
-        <form action="/edit/record/<%= record._id %>" method="POST">
-          <div class="form-group">
-            <label for="data">Number:</label>
-            <input type="number" id="data" name="data" min="0" step="0.1" value="<%= record.data %>">
-          </div>
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input type="date" name="date" id="date" value="<%= record_date %>"/>
-          </div>
-          <div class="form-group">
-            <label for="time">Time</label>
-            <input type="time" name="time" id="time" value="<%= record_time %>" />
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Update</button>
-        </form>
-      </section>
-      <hr>
-      <form action="/delete/record/<%= record._id %>" method="POST">
-        <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
-      </form>
-      <% } %>
-    <%- include('./partials/_footer'); %>
-  </div>
-</body>
+          <% } else if (type=='category' ) { %>
+            <section class="w-50">
+              <form action="/edit/category/<%= category._id %>" method="POST">
+                <div class="form-group">
+                  <label for="name">Category Name:</label>
+                  <input type="text" class="form-control" id="name" name="name" value="<%= category.name %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="group">Group:</label>
+                  <input type="text" class="form-control" id="group" name="group" value="<%= category.group %>"
+                    required>
+                </div>
+                <div class="form-group w-25">
+                  <label for="color" class="form-label">Color</label>
+                  <input type="color" class="form-control form-control-color" id="color" name="color"
+                    value="<%= category.color %>">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Edits</button>
+              </form>
+            </section>
+            <% } else if (type=='boolean' ) { %>
+              <section class="w-50">
+                <h4>Edit Record: <i>
+                    <%= record.variable %>
+                  </i></h4>
+                <form action="/edit/record/<%= record._id %>" method="POST">
+                  <div class="form-group">
+                    <input type="radio" id="data" name="data" value="1" <%- record.data=="1" ? 'checked' : '' %>>
+                    <label for="data">Yes</label><br>
+                    <input type="radio" id="data" name="data" value="0" <%- record.data=="0" ? 'checked' : '' %>>
+                    <label for="data">No</label>
+                  </div>
+                  <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date" value="<%= record_date %>" />
+                  </div>
+                  <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="time" name="time" id="time" value="<%= record_time %>" />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit Update</button>
+                </form>
+              </section>
+              <hr>
+              <form action="/delete/record/<%= record._id %>" method="POST">
+                <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
+              </form>
+              <% } else if (type=='scalar' ) { %>
+                <section class="w-50">
+                  <h4>Edit Record: <i>
+                      <%= record.variable %>
+                    </i></h4>
+                  <form action="/edit/record/<%= record._id %>" method="POST">
+                    <div class="form-group">
+                      <label for="data">Number:</label>
+                      <input type="number" id="data" name="data" min="0" step="0.1" value="<%= record.data %>">
+                    </div>
+                    <div class="form-group">
+                      <label for="date">Date</label>
+                      <input type="date" name="date" id="date" value="<%= record_date %>" />
+                    </div>
+                    <div class="form-group">
+                      <label for="time">Time</label>
+                      <input type="time" name="time" id="time" value="<%= record_time %>" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Update</button>
+                  </form>
+                </section>
+                <hr>
+                <form action="/delete/record/<%= record._id %>" method="POST">
+                  <button type="submit" class="btn btn-danger"><b>Delete This Record</b></button>
+                </form>
+                <% } %>
+                  <%- include('./partials/_footer'); %>
+      </div>
+  </body>
+
 </html>

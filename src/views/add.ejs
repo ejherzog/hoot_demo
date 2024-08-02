@@ -1,240 +1,252 @@
 <!DOCTYPE html>
 <html>
-    <%- include('./partials/_head'); %>
+<%- include('./partials/_head'); %>
+
   <body>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
     <script>
-        function deleteRow(event) {
-          event.target.parentNode.parentNode.remove();
-        }
+      function deleteRow(event) {
+        event.target.parentNode.parentNode.remove();
+      }
 
-        function addRow() {
-          const formRows = document.getElementById('formRows');
-          const newNumber = (formRows.children.length + 1);
+      function addRow() {
+        const formRows = document.getElementById('formRows');
+        const newNumber = (formRows.children.length + 1);
 
-          const newRow = document.createElement('div');
-          newRow.className = 'row form-group';
+        const newRow = document.createElement('div');
+        newRow.className = 'row form-group';
 
-          const deleteCol = document.createElement('div');
-          deleteCol.className = 'col-md-1';
-          const deleteButton = document.createElement('button');
-          deleteButton.type = 'button';
-          deleteButton.textContent = '-';
-          deleteButton.classList = 'btn btn-danger';
-          deleteButton.onclick = function(event) {
-            deleteRow(event);
-          };
-          deleteCol.appendChild(deleteButton);
-          newRow.appendChild(deleteCol);
+        const deleteCol = document.createElement('div');
+        deleteCol.className = 'col-md-1';
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.textContent = '-';
+        deleteButton.classList = 'btn btn-danger';
+        deleteButton.onclick = function (event) {
+          deleteRow(event);
+        };
+        deleteCol.appendChild(deleteButton);
+        newRow.appendChild(deleteCol);
 
-          const dayId = 'day' + newNumber;
-          const dayCol = document.createElement('div');
-          dayCol.className = 'col-md-3';
-          dayCol.id = 'col' + dayId;
-          const dayLabel = document.createElement('label');
-          dayLabel.htmlFor = dayId;
-          dayLabel.textContent = 'Day:';
-          dayCol.appendChild(dayLabel);
-          newRow.appendChild(dayCol);
+        const dayId = 'day' + newNumber;
+        const dayCol = document.createElement('div');
+        dayCol.className = 'col-md-3';
+        dayCol.id = 'col' + dayId;
+        const dayLabel = document.createElement('label');
+        dayLabel.htmlFor = dayId;
+        dayLabel.textContent = 'Day:';
+        dayCol.appendChild(dayLabel);
+        newRow.appendChild(dayCol);
 
-          const dayInput = document.createElement('input');
-          dayInput.type = 'date';
-          dayInput.id = dayId;
-          dayInput.name = dayId;
-          dayInput.value = moment(document.getElementById("day1").value).subtract((formRows.children.length), 'days').format("YYYY-MM-DD");
-          dayCol.appendChild(dayInput);
+        const dayInput = document.createElement('input');
+        dayInput.type = 'date';
+        dayInput.id = dayId;
+        dayInput.name = dayId;
+        dayInput.value = moment(document.getElementById("day1").value).subtract((formRows.children.length), 'days').format("YYYY-MM-DD");
+        dayCol.appendChild(dayInput);
 
-          const dataId = 'data' + newNumber;
-          const dataCol = document.createElement('div');
-          dataCol.className = 'col';
-          dataCol.id = 'col' + dataId;
-          const dataLabel = document.createElement('label');
-          dataLabel.htmlFor = dataId;
-          dataLabel.textContent = 'Data:'
-          dataCol.appendChild(dataLabel);
+        const dataId = 'data' + newNumber;
+        const dataCol = document.createElement('div');
+        dataCol.className = 'col';
+        dataCol.id = 'col' + dataId;
+        const dataLabel = document.createElement('label');
+        dataLabel.htmlFor = dataId;
+        dataLabel.textContent = 'Data:'
+        dataCol.appendChild(dataLabel);
 
-          const dataInput = document.createElement('input');
-          dataInput.type = 'number';
-          dataInput.id = dataId;
-          dataInput.name = dataId;
-          dataInput.min = 0;
-          dataInput.step = 0.1;
-          dataCol.appendChild(dataInput);
-          newRow.appendChild(dataCol);
+        const dataInput = document.createElement('input');
+        dataInput.type = 'number';
+        dataInput.id = dataId;
+        dataInput.name = dataId;
+        dataInput.min = 0;
+        dataInput.step = 0.1;
+        dataCol.appendChild(dataInput);
+        newRow.appendChild(dataCol);
 
-          newRow.appendChild(document.createElement('br'));
-  
-          formRows.appendChild(newRow);
-        }
+        newRow.appendChild(document.createElement('br'));
+
+        formRows.appendChild(newRow);
+      }
     </script>
     <%- include('./partials/_nav'); %>
-    <div class="container mt-2">
-      <%- include('./partials/_success'); %>
-      <hr>
-      <section class="w-75">
-        <h4>Add Boolean Record</h4>
-        <form action="/add" method="POST">
-          <div class="form-group">
-            <label for="variable">Variable:</label>
-            <select class="form-select" name="variable" id="variable" required>
-                <option selected disabled value="">--- Select One ---</option>
-                <% variables.forEach(function(s) { %>
-                    <% if (s.type == 'boolean') { %>
-                        <option value="<%= s.variable %>"><%= s.variable %></option>
-                     <% } %>
-                <% }) %>
-            </select>
-          </div>
-          <div class="form-group">
-            <input type="radio" id="data" name="data" value="1" checked>
-            <label for="data">Yes</label><br>
-            <input type="radio" id="data" name="data" value="0">
-            <label for="data">No</label>
-          </div>
-          <div class="collapse" id="booleanTimestamp">
-            <div class="form-group">
-              <label for="date">Date</label>
-              <input type="date" name="date" id="date" value="<%= today %>"/>
-            </div>
-            <div class="form-group">
-              <label for="time">Time</label>
-              <input type="time" name="time" id="time" value="<%= time %>" />
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success">Record Boolean</button>
-          <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#booleanTimestamp" aria-expanded="false" aria-controls="booleanTimestamp">Edit Timestamp</button>
-        </form>
-      </section>
-      <hr>
-      <section class="w-75">
-        <h4>Add Scalar Record</h4>
-        <form action="/add" method="POST">
-            <div class="form-group">
+      <div class="container mt-2">
+        <%- include('./partials/_success'); %>
+          <hr>
+          <section class="w-75">
+            <h4>Add Boolean Record</h4>
+            <form action="/add" method="POST">
+              <div class="form-group">
+                <label for="variable">Variable:</label>
+                <select class="form-select" name="variable" id="variable" required>
+                  <option selected disabled value="">--- Select One ---</option>
+                  <% variables.forEach(function(s) { %>
+                    <% if (s.type=='boolean' ) { %>
+                      <option value="<%= s.variable %>">
+                        <%= s.variable %>
+                      </option>
+                      <% } %>
+                        <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="radio" id="data" name="data" value="1" checked>
+                <label for="data">Yes</label><br>
+                <input type="radio" id="data" name="data" value="0">
+                <label for="data">No</label>
+              </div>
+              <div class="collapse" id="booleanTimestamp">
+                <div class="form-group">
+                  <label for="date">Date</label>
+                  <input type="date" name="date" id="date" value="<%= today %>" />
+                </div>
+                <div class="form-group">
+                  <label for="time">Time</label>
+                  <input type="time" name="time" id="time" value="<%= time %>" />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success">Record Boolean</button>
+              <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#booleanTimestamp"
+                aria-expanded="false" aria-controls="booleanTimestamp">Edit Timestamp</button>
+            </form>
+          </section>
+          <hr>
+          <section class="w-75">
+            <h4>Add Scalar Record</h4>
+            <form action="/add" method="POST">
+              <div class="form-group">
                 <label for="variable">Variable:</label>
                 <select name="variable" id="variable" required>
-                    <option selected disabled value="">--- Select One ---</option>
-                    <% variables.forEach(function(s) { %>
-                        <% if (s.type == 'scalar') { %>
-                            <option value="<%= s.variable %>"><%= s.variable %></option>
-                         <% } %>
+                  <option selected disabled value="">--- Select One ---</option>
+                  <% variables.forEach(function(s) { %>
+                    <% if (s.type=='scalar' ) { %>
+                      <option value="<%= s.variable %>">
+                        <%= s.variable %>
+                      </option>
+                      <% } %>
+                        <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="data">Number:</label>
+                <input type="number" id="data" name="data" min="0" step="0.1">
+              </div>
+              <div class="collapse" id="scalarTimestamp">
+                <div class="form-group">
+                  <label for="date">Date</label>
+                  <input type="date" name="date" id="date" value="<%= today %>" />
+                </div>
+                <div class="form-group">
+                  <label for="time">Time</label>
+                  <input type="time" name="time" id="time" value="<%= time %>" />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success">Record Scalar</button>
+              <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#scalarTimestamp"
+                aria-expanded="false" aria-controls="scalarTimestamp">Edit Timestamp</button>
+            </form>
+          </section>
+          <hr>
+          <section class="w-75">
+            <h4>Add New Variable</h4>
+            <form action="/add/variable" method="POST">
+              <div class="form-group">
+                <label for="variable">Variable Name:</label>
+                <input type="text" class="form-control" id="variable" name="variable" required>
+              </div>
+              <div class="form-group">
+                <label for="type">Variable Type:</label>
+                <select name="type" id="type" required>
+                  <option selected disabled value="">--- Select One ---</option>
+                  <option value="boolean">Boolean (Yes or No)</option>
+                  <option value="scalar">Scalar (Rating/Intensity or Count)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="subtype">Scalar Sub-Type:</label>
+                <select name="subtype" id="subtype">
+                  <option selected disabled value="">--- Select One ---</option>
+                  <option value="high_low">Rating/Intensity</option>
+                  <option value="hours">Hours</option>
+                  <option value="number">Number or Count</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sign">Positive or Negative:</label>
+                <select name="sign" id="sign">
+                  <option selected disabled value="">--- Select One ---</option>
+                  <option value="positive">Positive</option>
+                  <option value="negative">Negative</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <select name="category" class="form-control" id="category" name="category" required>
+                  <option selected disabled value="">--- Select One ---</option>
+                  <% categories.forEach(function(c) { %>
+                    <option value="<%= c.id %>">
+                      <%= c.name %>
+                    </option>
                     <% }) %>
                 </select>
               </div>
-          <div class="form-group">
-            <label for="data">Number:</label>
-            <input type="number" id="data" name="data" min="0" step="0.1">
-          </div>
-          <div class="collapse" id="scalarTimestamp">
-            <div class="form-group">
-              <label for="date">Date</label>
-              <input type="date" name="date" id="date" value="<%= today %>"/>
-            </div>
-            <div class="form-group">
-              <label for="time">Time</label>
-              <input type="time" name="time" id="time" value="<%= time %>" />
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success">Record Scalar</button>
-          <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" href="#scalarTimestamp" aria-expanded="false" aria-controls="scalarTimestamp">Edit Timestamp</button>
-        </form>
-      </section>
-      <hr>
-      <section class="w-75">
-        <h4>Add New Variable</h4>
-        <form action="/add/variable" method="POST">
-          <div class="form-group">
-            <label for="variable">Variable Name:</label>
-            <input type="text" class="form-control" id="variable" name="variable" required>
-          </div>
-          <div class="form-group">
-            <label for="type">Variable Type:</label>
-            <select name="type" id="type" required>
-                <option selected disabled value="">--- Select One ---</option>
-                <option value="boolean">Boolean (Yes or No)</option>
-                <option value="scalar">Scalar (Rating/Intensity or Count)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="subtype">Scalar Sub-Type:</label>
-            <select name="subtype" id="subtype">
-                <option selected disabled value="">--- Select One ---</option>
-                <option value="high_low">Rating/Intensity</option>
-                <option value="hours">Hours</option>
-                <option value="number">Number or Count</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="sign">Positive or Negative:</label>
-            <select name="sign" id="sign">
-                <option selected disabled value="">--- Select One ---</option>
-                <option value="positive">Positive</option>
-                <option value="negative">Negative</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="category">Category:</label>
-            <select name="category" class="form-control" id="category" name="category" required>
-              <option selected disabled value="">--- Select One ---</option>
-              <% categories.forEach(function(c) { %>
-                    <option value="<%= c.id %>"><%= c.name %></option>
-            <% }) %>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Add Variable</button>
-        </form>
-      </section>
-      <hr>
-      <section class="w-75">
-        <h4>Add New Category</h4>
-        <form action="/add/category" method="POST">
-          <div class="form-group">
-            <label for="name">Category Name:</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="group">Group:</label>
-            <input type="text" class="form-control" id="group" name="group" required>
-          </div>
-          <div class="form-group w-25">
-            <label for="color" class="form-label">Color</label>
-            <input type="color" class="form-control form-control-color" id="color" name="color" value="#000000">
-          </div>
-          <button type="submit" class="btn btn-primary">Add Category</button>
-        </form>
-      </section>
-      <hr>
-      <section class="w-75">
-        <h4>Add Historical Data</h4>
-      <form id="historyForm" action="/add/history" method="POST">
-        <div class="form-group">
-            <label for="variable">Variable:</label>
-            <select class="form-select" name="variable" id="variable" required>
-                <option selected disabled value="">--- Select One ---</option>
-                <% variables.forEach(function(s) { %>
-                    <option value="<%= s.variable %>"><%= s.variable %></option>
-                <% }) %>
-            </select>
-          </div>
-        <div id="formRows">
-            <div class="row form-group">
-                <div class="col-md-1">
+              <button type="submit" class="btn btn-primary">Add Variable</button>
+            </form>
+          </section>
+          <hr>
+          <section class="w-75">
+            <h4>Add New Category</h4>
+            <form action="/add/category" method="POST">
+              <div class="form-group">
+                <label for="name">Category Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="group">Group:</label>
+                <input type="text" class="form-control" id="group" name="group" required>
+              </div>
+              <div class="form-group w-25">
+                <label for="color" class="form-label">Color</label>
+                <input type="color" class="form-control form-control-color" id="color" name="color" value="#000000">
+              </div>
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+          </section>
+          <hr>
+          <section class="w-75">
+            <h4>Add Historical Data</h4>
+            <form id="historyForm" action="/add/history" method="POST">
+              <div class="form-group">
+                <label for="variable">Variable:</label>
+                <select class="form-select" name="variable" id="variable" required>
+                  <option selected disabled value="">--- Select One ---</option>
+                  <% variables.forEach(function(s) { %>
+                    <option value="<%= s.variable %>">
+                      <%= s.variable %>
+                    </option>
+                    <% }) %>
+                </select>
+              </div>
+              <div id="formRows">
+                <div class="row form-group">
+                  <div class="col-md-1">
+                  </div>
+                  <div class="col-md-3">
+                    <label for="day1">Day</label>
+                    <input type="date" name="day1" id="day1" value="<%= today %>" />
+                  </div>
+                  <div class="col">
+                    <label for="data1">Data:</label>
+                    <input type="number" id="data1" name="data1" min="0" step="0.1">
+                  </div>
                 </div>
-                <div class="col-md-3">
-                <label for="day1">Day</label>
-                <input type="date" name="day1" id="day1" value="<%= today %>"/>
-                </div>
-                <div class="col">
-                <label for="data1">Data:</label>
-                <input type="number" id="data1" name="data1" min="0" step="0.1">
-                </div>
-            </div>
-          </div>
-        <button type="button" class="btn btn-success m-2" onClick="addRow()">+</button>
-        <br>
-        <button type="submit" class="btn btn-primary m-2">Submit</button>
-      </form>
-    </section>
-      <%- include('./partials/_footer'); %>
-    </div>
+              </div>
+              <button type="button" class="btn btn-success m-2" onClick="addRow()">+</button>
+              <br>
+              <button type="submit" class="btn btn-primary m-2">Submit</button>
+            </form>
+          </section>
+          <%- include('./partials/_footer'); %>
+      </div>
   </body>
+
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<%- include('./partials/_head'); %>
+
+    <body>
+        <%- include('./partials/_nav'); %>
+            <div class="container mt-2">
+                <section>
+                    <table class="table table-sm table-striped">
+                        <tr>
+                            <th>Variable</th>
+                            <th>Data</th>
+                            <th>Timestamp</th>
+                            <th>Edit</th>
+                        </tr>
+                        <% records.forEach(function(r) { %>
+                            <tr>
+                                <td>
+                                    <%= r.variable %>
+                                </td>
+                                <td>
+                                    <%= r.data %>
+                                </td>
+                                <td>
+                                    <%= r.moment %>
+                                </td>
+                                <td><a href="/edit/record/<%= r.id %>">Edit</a></td>
+                            </tr>
+                            <% }) %>
+                    </table>
+                </section>
+                <hr>
+                <%- include('./partials/_footer'); %>
+            </div>
+    </body>
+
+</html>
