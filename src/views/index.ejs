@@ -4,7 +4,7 @@
 
   <body>
     <%- include('./partials/_nav'); %>
-      <div class="container mt-2">
+      <div class="container mt-2 col-xl-9">
         <hr>
         <h3 class="text-center">HOOT <i>(Demo Version)</i></h3>
         <h5 class="text-center">A Personal Health Tracker</h5>
@@ -15,11 +15,9 @@
 
         <hr>
         <h4>What Does It Do?</h4>
-        <p class="ml-3">HOOT allows users to record and visualize data relevant to their personal experiences.</p>
-        <h5>Variables & Categories</h5>
-
-        <p class="ml-3">Users can create their own categories and define all the variables they want to
-          track.<br>Variables can be:</p>
+        <p class="ml-3">HOOT allows users to record and visualize data relevant to their personal experiences. Users can
+          create their own categories and define all the variables they want to
+          track. Examples of variables a user might record:</p>
 
         <ul>
           <li><b>boolean</b>: yes/no, ate or didn't eat, did or didn't do</li>
@@ -38,30 +36,21 @@
             <li>"<i>I had a horrible, intense headache</i>"</li>
           </ul>
         </ul>
-        <p class="ml-3">Variables can be classified as positive or negative. For example, drinking water might be a
-          positive habit whereas nail biting might be a negative habit. The positive/negative classification is used to
-          make graphic visualizations of the data more meaningful.</p>
 
-        <p class="ml-3">When a data point is recorded, the current timestamp is automatically saved. Users can change
-          the timestamp before or after recording the data point.</p>
-
-        <p class="ml-3">Each category and variable can have a custom color associated. This color will be used when
-          graphing the data.</p>
-
-        <h5>Shortcuts</h5>
+        <h5><i class="fa fa-fast-forward" aria-hidden="true"></i> Shortcuts</h5>
 
         <p class="ml-3">Boolean variables can be set as shortcuts. The shortcuts tab is a collection of buttons - one
           for each variable tagged as a shortcut. This is great for quickly recording frequent medications or commonly
           consumed food and drink.</p>
 
-        <h5>Daily Forms</h5>
+        <h5><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Daily Forms</h5>
 
         <p class="ml-3">Variables can also be added to daily forms. There is one for morning and one for evening. For
           example, the daily morning form could include sleep variables or basal body temperature (taken upon waking
           up). For the evening, a user can reflect on there day: <i>How intense was my anxiety today?</i> or <i>How many
             hours did I spend sitting at at desk?</i></p>
 
-        <h5>Visualizations</h5>
+        <h5><i class="fa fa-bar-chart" aria-hidden="true"></i> Visualizations</h5>
 
         <p class="ml-3">Bar charts and heatmaps are available in the Charts tab. The bar charts for individual variables
           take into account whether each variable is positive or negative and graphs the data accordingly. There is also
@@ -72,6 +61,32 @@
           means there is a boolean heatmap, a scalar heatmap, a boolean bar chart, a scalar bar chart, and a category
           bar chart. As of July 2024, I track 90 variables (yes, ninety!) so splitting the charts by type of variable
           helps keeps the graphs from being too full of data to observe the information in a useful way.</p>
+
+        <h5><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Record, Variable, or Category</h5>
+
+        <p class="ml-3">On the Add tab, users can record a new data point. They can also add new variables to track or
+          create new categories.</p>
+
+        <p class="ml-3">Variables can be classified as positive or negative. For example, drinking water might be a
+          positive habit whereas nail biting might be a negative habit. The positive/negative classification is used to
+          make graphic visualizations of the data more meaningful.</p>
+
+        <p class="ml-3">When a data point is recorded, the current timestamp is automatically saved. Users can change
+          the timestamp before or after recording the data point.</p>
+
+        <p class="ml-3">Each category and variable can have a custom color associated. This color will be used when
+          graphing the data.</p>
+
+        <h5><i class="fa fa-database" aria-hidden="true"></i> Data Records</h5>
+
+        <p class="ml-3">The Data section is a simple table, sorted in reverse order by record timestamp. Each record has
+          an Edit button in case an entry was recorded incorrectly. In the future,
+          this table will be searchable and sortable.</p>
+
+        <h5><i class="fa fa-list" aria-hidden="true"></i> Categories & Variables</h5>
+
+        <p class="ml-3">This page has a Categories table and a Variables table. From here, users can edit variables or categories.</p>
+
         <hr>
         <h4>Why Build This?</h4>
         <div class="ml-3">
