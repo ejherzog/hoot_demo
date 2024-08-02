@@ -5,9 +5,20 @@ import { dayRecordedString, timestamp } from "./utils";
 
 export function generateHeatmapData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
-    const twoMonthsAgo = moment().subtract(2, 'months').startOf('day');
-    const recentRecords = records.getAllData().filter(record => timestamp(record) > twoMonthsAgo.valueOf());
-    const dates: string[] = generateDates(twoMonthsAgo);
+    let oldest = Number.MAX_VALUE;
+    let newest = Number.MIN_VALUE;
+
+    records.getAllData().forEach(record => {
+        const time = timestamp(record);
+        if (time > newest) {
+            newest = time;
+        }
+        if (time < oldest) {
+            oldest = time;
+        }
+    });
+
+    const dates: string[] = generateDates(oldest, newest);
 
     var categoryById = new Map<string, string>(); // category ID -> {_id, color}
     categories.getAllData()
@@ -16,11 +27,12 @@ export function generateHeatmapData(categories: Datastore, variables: Datastore,
         });
     categoryById.set('none', '#5294C4');
 
-    const scalarData = generateScalarHeatmapData(categoryById, variables, recentRecords, dates);
-    const booleanData = generateBooleanHeatmapData(categoryById, variables, recentRecords, dates);
+    const scalarData = generateScalarHeatmapData(categoryById, variables, records.getAllData(), dates);
+    const booleanData = generateBooleanHeatmapData(categoryById, variables, records.getAllData(), dates);
     const heatmapData = scalarData.scalarHeatData.concat(booleanData.booleanHeatData);
     const heatmapColors = scalarData.scalarHeatColorData.concat(booleanData.booleanHeatColorData);
 
+    console.log(heatmapData);
     return { heatmapData, heatmapColors, xAxisDates: dates, xAxisCount: Math.floor(dates.length / 3) }
 }
 
@@ -91,7 +103,7 @@ function generateBooleanHeatmapData(categoryById: Map<string, string>, variables
                 dataMap.set(date, 1);
             }
         });
-    
+
     var booleanHeatColorData: string[] = [];
     var booleanHeatData: { name: string, data: HeatPoint[] }[] = [];
 
@@ -103,16 +115,16 @@ function generateBooleanHeatmapData(categoryById: Map<string, string>, variables
         }
     });
 
-    return { booleanHeatData, booleanHeatColorData }; 
+    return { booleanHeatData, booleanHeatColorData };
 }
 
-function generateDates(startDate: Moment): string[] {
+function generateDates(start: number, end: number): string[] {
 
-    const now = moment();
-    var current = startDate;
+    const endTime = moment(end);
+    var current = moment(start);
     var dates: string[] = [];
 
-    while (current.isBefore(now)) {
+    while (current.isBefore(endTime)) {
         dates.push(current.startOf('day').format("MMM DD"));
         current.add(1, 'day');
     }

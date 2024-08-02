@@ -5,7 +5,7 @@ import { dayRecorded, timestamp } from "./utils";
 
 export function generateChartData(categories: Datastore, variables: Datastore, records: Datastore): any {
 
-    const twoWeeksAgo = moment().subtract(2, 'weeks').startOf('day').valueOf();
+    const fourWeeksAgo = moment().subtract(4, 'weeks').startOf('day').valueOf();
 
     var categoryById = new Map<string, any>(); // category ID -> {_id, color, name, group}
     categories.getAllData()
@@ -41,7 +41,7 @@ export function generateChartData(categories: Datastore, variables: Datastore, r
             }
         });
     
-    const recentRecords = records.getAllData().filter(record => timestamp(record) > twoWeeksAgo);
+    const recentRecords = records.getAllData().filter(record => timestamp(record) > fourWeeksAgo);
     var categorySets = generateCategoryData(categoryMap, categoryById, recentRecords);
     var highLowSets = generateStackedHighLowData(highLowCatMap, posNegMap, highLowColorMap, recentRecords);
     var scalarSets = generateScalarData(scalarColorMap, recentRecords);

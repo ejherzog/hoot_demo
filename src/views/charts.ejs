@@ -25,13 +25,10 @@
                   <div id="heatmap"></div>
                   <script>
                     var options = {
-                      series: <% - JSON.stringify(heatmapData) %>,
+                      series: <%- JSON.stringify(heatmapData) %>,
                       chart: {
                         type: 'heatmap'
                       },
-                      // tooltip: {
-                      //     enabled: false
-                      // },
                       states: {
                         hover: {
                           filter: 'none'
@@ -44,13 +41,13 @@
                         }
                       },
                       xaxis: {
-                        tickAmount: <% - xAxisCount %>,
-                        categories: <% - JSON.stringify(xAxisDates) %>
+                        tickAmount: <%- xAxisCount %>,
+                        categories: <%- JSON.stringify(xAxisDates) %>
                       },
                       dataLabels: {
                         enabled: false
                       },
-                      colors: <% - JSON.stringify(heatmapColors) %>,
+                      colors: <%- JSON.stringify(heatmapColors) %>,
                       stroke: {
                         width: 0
                       }
@@ -113,7 +110,7 @@
                       }
                     },
                     data: {
-                      datasets: <% - JSON.stringify(categoryBarData) %>
+                      datasets: <%- JSON.stringify(categoryBarData) %>
                     }
                   });
                 </script>
@@ -166,8 +163,8 @@
                         }
                       },
                       data: {
-                        datasets: <% - JSON.stringify(highLowBarData) %>
-                    }
+                        datasets: <%- JSON.stringify(highLowBarData) %>
+                      }
                     });
 
                     const booleanCtx = document.getElementById("booleanBarChart").getContext("2d");
@@ -195,7 +192,7 @@
                         }
                       },
                       data: {
-                        datasets: <% - JSON.stringify(booleanBarData) %>
+                        datasets: <%- JSON.stringify(booleanBarData) %>
                     }
                     });
 
@@ -233,7 +230,7 @@
                         }
                       },
                       data: {
-                        datasets: <% - JSON.stringify(scalarBarData) %>
+                        datasets: <%- JSON.stringify(scalarBarData) %>
                     }
                     });
                   </script>
