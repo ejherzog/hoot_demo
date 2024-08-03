@@ -32,7 +32,6 @@ export function generateHeatmapData(categories: Datastore, variables: Datastore,
     const heatmapData = scalarData.scalarHeatData.concat(booleanData.booleanHeatData);
     const heatmapColors = scalarData.scalarHeatColorData.concat(booleanData.booleanHeatColorData);
 
-    console.log(heatmapData);
     return { heatmapData, heatmapColors, xAxisDates: dates, xAxisCount: Math.floor(dates.length / 3) }
 }
 

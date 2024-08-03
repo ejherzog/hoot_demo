@@ -31,8 +31,9 @@ app.get('/add/:success?', (req: Request, res: Response) => {
     res.render('add', { ...getAddData(categories, variables), success });
 });
 
-app.get('/shortcuts', (req: Request, res: Response) => {
-    res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success: undefined });
+app.get('/shortcuts/:success?', (req: Request, res: Response) => {
+    var success = req.params.success;
+    res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success });
 });
 
 app.get('/daily', (req: Request, res: Response) => {
@@ -96,10 +97,10 @@ app.post('/add', (req: Request, res: Response) => {
     }
 
     const from = req.get('Referer');
-    if (from?.endsWith('shortcuts')) {
-        res.render('shortcuts', { shortcutData: getShortcutData(categories, variables), success: req.body.variable })
-    } else if (from?.endsWith('add')) {
-        res.render('add', { ...getAddData(categories, variables), success: req.body.variable })
+    if (from?.includes('shortcuts')) {
+        res.redirect(`/shortcuts/${req.body.variable}`);
+    } else if (from?.includes('add')) {
+        res.redirect(`/add/${req.body.variable}`);
     } else {
         res.redirect('/all');
     }
@@ -118,7 +119,7 @@ app.post('/add/history', (req: Request, res: Response) => {
             records.insert({ variable: variable, data: value, timestamp: datetime });
         }
     }
-    res.redirect('/all');
+    res.redirect('/data');
 });
 
 app.post('/edit/variable/:id', (req: Request, res: Response) => {
@@ -143,7 +144,7 @@ app.post('/edit/record/:id', (req: Request, res: Response) => {
             timestamp: moment(req.body.date + ' ' + req.body.time).valueOf()
         }
     });
-    res.redirect('/all');
+    res.redirect('/data');
 });
 
 app.post('/daily', (req: Request, res: Response) => {
@@ -153,7 +154,7 @@ app.post('/daily', (req: Request, res: Response) => {
     for (const [key, value] of Object.entries(req.body)) {
         records.insert({ variable: key, data: value, timestamp });
     }
-    res.redirect('/all');
+    res.redirect('/data');
 });
 
 app.post('/delete/variable/:id', (req: Request, res: Response) => {
@@ -163,7 +164,7 @@ app.post('/delete/variable/:id', (req: Request, res: Response) => {
 
 app.post('/delete/record/:id', (req: Request, res: Response) => {
     records.remove({ _id: req.params.id });
-    res.redirect('/all');
+    res.redirect('/data');
 });
 
 app.use(express.static(__dirname + '/public'));
